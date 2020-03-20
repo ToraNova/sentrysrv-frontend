@@ -1,0 +1,11 @@
+Special directories are /pages and /public
+please do not change their names!
+
+to change port number : please edit -p <port> under package.json
+
+do a npm run dev during development
+once wanna release, do npm run build and npm start
+
+TODOLIST
+logout
+able to see for split-second when page switching (protected area protection?)

@@ -14,7 +14,7 @@ import AuthService from '../utils/authser.js'
 import Layout from '../layouts/minimalist/border1.js'
 
 //configure AuthService onto localhost:1996
-const auth = new AuthService('http://localhost:1996')
+const auth = new AuthService(process.env.backend_urlp)
 
 class Signup extends Component {
 	constructor(props) {

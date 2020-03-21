@@ -17,7 +17,13 @@ class Profile extends Component {
 			<Layout>
 			<Nav/>
 			</Layout>
-			<div>Current user: {user.email}</div>
+			<div><b>User Profile</b></div>
+			<div>Userid: {user.id}</div>
+			<div>Username: {user.username}</div>
+			<div>Email: {user.email}</div>
+			<div>Created on: {user.created_at}</div>
+			<div>Role: {user.role.name}</div>
+			<div>Description: {user.role.description}</div>
 			</div>
 		)
 	}

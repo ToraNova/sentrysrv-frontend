@@ -16,7 +16,7 @@ import Router from 'next/router'
 export default class AuthService {
 	//if domain is passed, then use that else fallback to localhost:5000
 	constructor(domain) {
-		this.domain = domain || 'http://localhost:1996'
+		this.domain = domain || process.env.backend_urlp
 		this.fetch = this.fetch.bind(this)
 		this.login = this.login.bind(this)
 		this.getProfile = this.getProfile.bind(this)
@@ -24,20 +24,16 @@ export default class AuthService {
 
 	//signup a user
 	signUp(email, name, password){
-		return this.fetch(`${this.domain}/user/add`, {
+		return this.fetch(`${this.domain}/auth/local/register`, {
 			method: 'POST',
 			body: JSON.stringify({
 			email,
-			name,
+			username,
 			password
 		})
 		}).then(res => {
-			this.setToken(res.token) //arms the token
-			return this.fetch(`${this.domain}/user/profile`, {
-			method: 'GET'
-		})
-		}).then(res => {
-			this.setProfile(res)
+			this.setToken(res.jwt) //arms the token
+			this.setProfile(res.user)
 			return Promise.resolve(res)
 		}).catch( function(error){
 			throw error;
@@ -45,23 +41,20 @@ export default class AuthService {
 	}
 
 	// Get a token
-	login(email, password) {
-		return this.fetch(`${this.domain}/user/login`, {
+	login(identifier, password) {
+		return this.fetch(`${this.domain}/auth/local`, {
 			method: 'POST',
 			body: JSON.stringify({
-			email,
+			identifier,
 			password
 			})
 		}).then(res => {
-			this.setToken(res.token) //arms the token
-			return this.fetch(`${this.domain}/user/profile`, {
-			method: 'GET'
-		})
-		}).then(res => {
-			this.setProfile(res)
+			console.log(res)
+			this.setToken(res.jwt) //arms the token
+			this.setProfile(res.user)
 			return Promise.resolve(res)
-		}).catch( function(error){
-			throw error;
+		}).catch( function(err){
+			throw err;
 		})
 	}
 
@@ -98,25 +91,30 @@ export default class AuthService {
 	// and logout user (from all device /all)
 	logout(){
 		//only proceed if the user IS logged in
-		return this.fetch(`${this.domain}/user/logout/all`, {
-			method: 'POST'
-		}).then(res => {
-			//response is 204
-			localStorage.removeItem('token');
-			localStorage.removeItem('profile');
-			return Promise.resolve(res)
-		}).catch( function(error){
-			throw error;
-		})
+		//nah, just logout
+		localStorage.removeItem('token');
+		localStorage.removeItem('profile');
+		return Promise.resolve()
+
+		//return this.fetch(`${this.domain}/user/logout/all`, {
+		//	method: 'POST'
+		//}).then(res => {
+		//	//response is 204
+		//	localStorage.removeItem('token');
+		//	localStorage.removeItem('profile');
+		//	return Promise.resolve(res)
+		//}).catch( function(error){
+		//	throw error;
+		//})
 	}
 
 	// raises an error in case response status is not a success
-	_checkStatus(response) {
-		if (response.status >= 200 && response.status < 300) {
-			return response
+	_checkStatus(res) {
+		if (res.status >= 200 && res.status < 300) {
+			return res
 		} else {
-			var error = new Error(response.statusText)
-			error.response = response
+			var error = new Error(res.statusText)
+			error.res = res
 			throw error
 		}
 	}
@@ -149,7 +147,7 @@ export default class AuthService {
 			...options
 		})
 		.then(this._checkStatus)
-		.then(response => response.json())
+		.then(res => res.json())
 		.catch(function(error) {
 			throw error;
 		})

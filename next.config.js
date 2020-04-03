@@ -14,9 +14,7 @@ module.exports = (phase, { defaultConfig }) => {
 
 	return {
 		env: {
-			env: {
-				backend_urlp: 'http://localhost:1337'
-			},
+			backend_urlp: 'http://localhost:1337'
 		},
 		/* config options for all phases except development here */
 	}

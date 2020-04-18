@@ -18,13 +18,14 @@ export default class AuthService {
 	constructor(domain) {
 		this.domain = domain || process.env.backend_urlp
 		this.fetch = this.fetch.bind(this)
+		this.dfetch = this.dfetch.bind(this)
 		this.login = this.login.bind(this)
 		this.getProfile = this.getProfile.bind(this)
 	}
 
 	//signup a user
 	signUp(email, name, password){
-		return this.fetch(`${this.domain}/auth/local/register`, {
+		return this.dfetch(`/auth/local/register`, {
 			method: 'POST',
 			body: JSON.stringify({
 			email,
@@ -42,7 +43,7 @@ export default class AuthService {
 
 	// Get a token
 	login(identifier, password) {
-		return this.fetch(`${this.domain}/auth/local`, {
+		return this.dfetch(`/auth/local`, {
 			method: 'POST',
 			body: JSON.stringify({
 			identifier,
@@ -114,7 +115,7 @@ export default class AuthService {
 			return res
 		} else {
 			var error = new Error(res.statusText)
-			error.res = res
+			error.response = res //allow catchers to access the error
 			throw error
 		}
 	}
@@ -149,6 +150,16 @@ export default class AuthService {
 		.then(this._checkStatus)
 		.then(res => res.json())
 		.catch(function(error) {
+			throw error;
+		})
+	}
+
+	//limited to only this domain, please DO NOT PREPEND DOMAIN
+	dfetch(url, options){
+		return this.fetch(`${this.domain}${url}`, options)
+		.then(res => {
+			return Promise.resolve(res)
+		}).catch( function(error){
 			throw error;
 		})
 	}

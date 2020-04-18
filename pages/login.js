@@ -39,11 +39,11 @@ class Login extends Component {
 		})
 		.catch(e => {
 			//display login error
-			if( e.response && e.response.status == 401){
+			if( e.response && (e.response.status == 401 || e.response.status == 400)){
 				//unauthorized (wrong creds or invalid input)
 				//change the worm image
 				this.refs.worm.src = "/icons/worm128-o.png"
-				this.refs.status.innerHTML = "Invalid credentials !"
+				this.refs.status.innerHTML = "Invalid login !"
 			}else{
 				Router.push('/error/[emsg]',`/error/${e}`)
 			}
@@ -69,7 +69,6 @@ class Login extends Component {
 		<br/>
 		<label ref="status" style={{color:'#ea3636', textAlign: 'right'}}></label>
 
-		<Link href="/signup"><a >Signup</a></Link>
 		</form>
 		</div>
 		<style jsx>{`

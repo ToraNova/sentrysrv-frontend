@@ -14,7 +14,7 @@ import Select from 'react-select';
 
 //custom components import
 import Nav from './nav.js'
-import Border from '../layouts/minimalist/border0.js'
+import Border from '../layouts/minimalist/border2.js'
 
 //requires authentication
 import AuthRequired from  '../utils/authreq.js'
@@ -86,7 +86,7 @@ class Editor extends Component {
 
 	componentDidMount(){
 		this.fDraw() //refresh
-		console.log('dashboard-mounted')
+		//console.log('editor-mounted')
 
 		//obtain the list of hosts asynchronously
 		this.props.auth.dfetch('/fence-hosts',{
@@ -188,17 +188,17 @@ class Editor extends Component {
 					'id': this.state.csegid.value
 				}
 			}
-			console.log(JSON.stringify(postdat))
 			this.props.auth.dfetch('/draw-lines',{
 				method: 'POST',
 				body: JSON.stringify(postdat)
 			}).then(res => {
+				this.setState((state, props) => ({
+					displaytext: `Line registered id:${res.id}`,
+				}))
 			}).catch( function(e){
 				Router.push('/error/[emsg]',`/error/${e}`)
 			})
-			console.log("Registering new line for segment")
-		}else{
-			window.alert("Line draw incomplete.");
+			//console.log("Registering new line for segment")
 		}
 	}
 
@@ -235,7 +235,7 @@ class Editor extends Component {
 		this.setState(
 			{csegid: selectedOption, displaytext:"Click on map to start drawing"},
 			() => {
-				console.log(`Segment selected:`, this.state.csegid)
+				//console.log(`Segment selected:`, this.state.csegid)
 				this.fDraw(this.state.csegid.value)
 			}
 		);
@@ -251,13 +251,12 @@ class Editor extends Component {
 			method: 'GET'
 		}).then(res => {
 			res.forEach( (elem, idx) => {
-				console.log(elem)
 				if(elem.fence_segment.id == this.state.csegid.value){
 					//delete the line
 					this.props.auth.dfetch(`/draw-lines/${elem.id}`,{
 						method: 'DELETE'
 					}).then(res => {
-						console.log(`DrawLine id:${elem.id} deleted.`)
+						//console.log(`DrawLine id:${elem.id} deleted.`)
 						this.fDraw(this.state.csegid.value)
 					}).catch( function(e){
 						Router.push('/error/[emsg]',`/error/${e}`)
@@ -271,11 +270,19 @@ class Editor extends Component {
 
 	//Main render function
 	render(){
+
+		const linkStyle = {
+			marginRight: 15
+		};
+
 		return (
 		<div>
 		<KeyHandler keyEventName={KEYPRESS} keyValue=" " onKeyHandle={this.handleSpaceKey}/>
 		<Border>
 		<div id="selection">
+			<div className="schild">
+			<Link href="/dashboard"><a style={linkStyle}>Back to Dashbboard</a></Link>
+			</div>
 			<div className="schild">
 			<p>Host Filter</p>
 			<Select value={this.state.chostid} onChange={this.changeHost} options={this.state.hostlist}/>
@@ -301,6 +308,7 @@ class Editor extends Component {
 
 		<style jsx>{`
 		#contain {
+		width: ${this.props.mwidth}px;
 		height: ${this.props.mheight}px;
 		margin-top: 10px;
 		}
@@ -311,7 +319,7 @@ class Editor extends Component {
 
 		.schild {
 		float: left;
-		width: 300px;
+		width: 400px;
 		margin-left: 10px;
 		margin-right: 10px;
 		}
@@ -322,6 +330,7 @@ class Editor extends Component {
 }
 
 Editor.defaultProps = {
+	mwidth: 1340,
 	mheight:441,
 	mscale:1000, //not used for now
 }

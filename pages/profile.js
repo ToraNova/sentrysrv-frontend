@@ -17,6 +17,7 @@ class Profile extends Component {
 			<Layout>
 			<Nav/>
 			</Layout>
+			<div id="main">
 			<div><b>User Profile</b></div>
 			<div>Userid: {user.id}</div>
 			<div>Username: {user.username}</div>
@@ -24,6 +25,14 @@ class Profile extends Component {
 			<div>Created on: {user.created_at}</div>
 			<div>Role: {user.role.name}</div>
 			<div>Description: {user.role.description}</div>
+			</div>
+<style jsx>{`
+#main {
+	margin:15px;
+	padding: 15px;
+}
+`}</style>
+
 			</div>
 		)
 	}

@@ -14,12 +14,20 @@ const testcontent = <p>Hello Next.js</p>
 
 //reminder: all elements must be enclosed by a main <div></div> block
 const Index = () => (
-	<div>
-	<Border>
-	<Nav />
-	</Border>
-	{testcontent}
+<div>
+<Border>
+<Nav />
+</Border>
+	<div id="main">
+	<h1>Advance Computing Fencing Dashboard System v2</h1>
 	</div>
+<style jsx>{`
+#main {
+	margin:15px;
+	padding: 15px;
+}
+`}</style>
+</div>
 );
 
 export default Index;

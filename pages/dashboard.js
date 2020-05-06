@@ -18,6 +18,8 @@ import Button from 'react-bootstrap/Button';
 //custom components import
 import Nav from './nav.js'
 import Border from '../layouts/minimalist/border2.js'
+import AlertView from '../components/alertview.js'
+import AlertDetail from '../components/alertdetail.js'
 
 //requires authentication
 import AuthRequired from  '../utils/authreq.js'
@@ -32,7 +34,7 @@ class Dashboard extends Component {
 			alist: [],
 			adlist: [],
 			lines: [],
-			caid: null,
+			caid: 0,
 			showlines: false,
 			blink: false
 		}
@@ -40,18 +42,26 @@ class Dashboard extends Component {
 
 	//toggle showlines or not
 	showlines = () => {
-		this.setState({showlines: !this.state.showlines})
+		this.setState({showlines: !this.state.showlines}, () => {
+			clearInterval(this.state.blinkerd)
+			if(this.state.showlines){
+				this.state.llist.forEach( (elem, idx) => {
+					//console.log(idx,sid, elem.fence_segment.id)
+					this.lineDraw(elem.Data)
+				})
+			}else{
+				//do nothing
+				const blinkerd = setInterval(this.blinker, 500); //blink every 1 second
+				this.setState({blinkerd: blinkerd}, () => {
+					this.fDraw()
+				})
+			}
+		})
 	}
 
 	//foreground draw function
 	fDraw = ( lines = [], nstyle ) => {
 		this.state.ctx.drawImage(this.state.map, 0, 0, this.state.map.width, this.state.map.height, 0, 0, this.state.canvas.width, this.state.canvas.height)
-		if(this.state.showlines){
-			this.state.llist.forEach( (elem, idx) => {
-				//console.log(idx,sid, elem.fence_segment.id)
-				this.lineDraw(elem.Data)
-			})
-		}
 		if(nstyle == undefined) nstyle = 'red'
 		this.mDraw( lines, nstyle )
 	}
@@ -107,20 +117,48 @@ class Dashboard extends Component {
 				//stop the blinker
 				clearInterval(this.state.blinkerd)
 				if( this.state.caid.value <= 0){
-					var blinkerd = setInterval(this.blinker, 500); //blink every 1 second
-					this.setState({blinkerd: blinkerd}, () => {
+					const blinkerd = setInterval(this.blinker, 500); //blink every 1 second
+					this.setState({blinkerd: blinkerd, aview: undefined}, () => {
 						this.fDraw()
 					})
 				}else{
+					this.fDraw() //clear
 					//highlight blue
 					const a = this.obtainEnt( this.state.caid.value, 'alist' )
-					const sline = this.obtainLines( a.fence_segment.id )
+					const s = this.obtainEnt( a.fence_segment.id, 'slist')
+					const sline = this.obtainLines( s.id )
 					this.mDraw( sline, 'blue' )
-
-					//display picture
+					a['fence_host'] = s.fence_host
+					//display alert on view and detail
+					this.setState({ aview: a })
 				}
 			}
 		);
+	}
+
+	aSubmit = (sel) => {
+		//comes here when we submit alert reason
+		if( this.state.caid.value > 0 ){
+			const a = this.obtainEnt( this.state.caid.value, 'alist' )
+			a['Reason'] = sel.target.value
+			a['fence_segment'] = a.fence_segment.id
+			this.props.auth.dfetch(`/alerts/${this.state.caid.value}`,{
+				method: 'PUT',
+				body: JSON.stringify(
+					a
+				)
+			}).then(res => {
+				console.log(res)
+				clearInterval(this.state.blinkerd)
+				const blinkerd = setInterval(this.blinker, 500); //blink every 1 second
+				this.setState({blinkerd: blinkerd, aview: undefined, caid: 0}, () => {
+					this.fDraw()
+				})
+			}).catch( function(e){
+				Router.push('/error/[emsg]',`/error/${e}`)
+			})
+		}
+
 	}
 
 	//Main render function
@@ -149,6 +187,7 @@ class Dashboard extends Component {
 		<div id="selection">
 			<div className="schild">
 			<Link href="/editor"><a style={linkStyle}>Map Editor</a></Link>
+			<Link href="/"><a style={linkStyle}>Home</a></Link>
 			</div>
 			<div className="schild">
 			<p>Alert Selection</p>
@@ -161,6 +200,10 @@ class Dashboard extends Component {
 		<div id="contain">
 			<canvas ref="drawable" onClick={this.state.canvashandler}/>
 		</div>
+		</Border>
+
+		<Border>
+			<AlertDetail value={ this.state.aview } onSubmit={this.aSubmit}></AlertDetail>
 		</Border>
 
 		<Border>
@@ -177,7 +220,7 @@ class Dashboard extends Component {
 
 	<Col md={3}>
 		<div style={rpStyle}>
-			<p refs="display">{this.state.displaytext}</p>
+			<AlertView value={ this.state.aview }></AlertView>
 		</div>
 	</Col>
 </Row>
@@ -272,8 +315,8 @@ margin-right: 10px;
 
 		img.onload = () => {
 			//ctx.drawImage(img, 0, 0, this.props.mscale, this.props.mscale*img.height / img.width)
-			var blinkerd = setInterval(this.blinker, 500); //blink every 1 second
-			var timerd = setInterval(this.timer, 1000); //renew alert list every 5 seconds
+			const timerd = setInterval(this.timer, 1000); //renew alert list every 5 seconds
+			const blinkerd = setInterval(this.blinker, 500); //blink every 1 second
 			this.setState({blinkerd: blinkerd, timerd: timerd,
 				map: img, ctx: ctx, canvas: canvas},
 				() => {

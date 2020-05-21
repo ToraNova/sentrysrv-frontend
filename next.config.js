@@ -6,16 +6,20 @@ module.exports = (phase, { defaultConfig }) => {
 	if (phase === PHASE_DEVELOPMENT_SERVER) {
 		return {
 			env: {
-				backend_urlp: 'http://localhost:1337'
+				backend_urlp: 'http://localhost:1337',
+				mapfile: '/map.png'
 			},
+			crossOrigin: 'anonymous'
 		/* development only config options here */
 		}
 	}
 
 	return {
 		env: {
-			backend_urlp: 'http://localhost:1337'
+			backend_urlp: 'http://localhost:1337',
+			mapfile: '/map.png'
 		},
+		crossOrigin: 'anonymous'
 		/* config options for all phases except development here */
 	}
 }

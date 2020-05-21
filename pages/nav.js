@@ -27,7 +27,8 @@ const linkStyle = {
 const Nav = () => (
 	<div>
 	<Link href="/profile"><a style={linkStyle}>Profile</a></Link>
-	<Link href="/dashboard"><a style={linkStyle}>Dashboard</a></Link>
+	<Link href="/map"><a style={linkStyle}>Map</a></Link>
+	<Link href="/focus"><a style={linkStyle}>Focus</a></Link>
 	<Link href="/editor"><a style={linkStyle}>Editor</a></Link>
 	<Link href="/login"><a style={linkStyle}>Login</a></Link>
 	<Link href="/logout"><a style={linkStyle}>Logout</a></Link>

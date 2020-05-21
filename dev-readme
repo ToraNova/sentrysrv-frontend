@@ -9,3 +9,5 @@ once wanna release, do npm run build and npm start
 TODOLIST
 logout
 able to see for split-second when page switching (protected area protection?)
+
+we are going to use redux for the global state manager to persist states and data across pages

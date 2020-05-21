@@ -11,6 +11,7 @@ import Router from 'next/router' //router
 // import from online
 import KeyHandler, { KEYPRESS } from 'react-key-handler';
 import Select from 'react-select';
+import { Container, Row, Col } from 'react-bootstrap';
 
 //custom components import
 import Nav from './nav.js'
@@ -194,12 +195,23 @@ class Editor extends Component {
 			}).then(res => {
 				this.setState((state, props) => ({
 					displaytext: `Line registered id:${res.id}`,
+					line:{
+						width:3,
+						style:'black'
+					},
 				}))
 			}).catch( function(e){
 				Router.push('/error/[emsg]',`/error/${e}`)
 			})
 			//console.log("Registering new line for segment")
+
+		}else{
+			this.setState((state, props) => ({
+				displaytext: `Please click on new point first.`,
+			}))
+
 		}
+
 	}
 
 	//Changing a Host
@@ -275,64 +287,70 @@ class Editor extends Component {
 			marginRight: 15
 		};
 
+		const rpStyle = {
+			border: '2px solid #CCC',
+			marginTop: '20px',
+			padding: '5px',
+			marginLeft: '10px',
+			marginRight: '10px',
+			height: `${this.props.mheight}px`
+		};
+
 		return (
-		<div>
-		<KeyHandler keyEventName={KEYPRESS} keyValue=" " onKeyHandle={this.handleSpaceKey}/>
-		<Border>
-		<div id="selection">
-			<div className="schild">
-			<Link href="/dashboard"><a style={linkStyle}>Back to Dashbboard</a></Link>
-			</div>
-			<div className="schild">
-			<p>Host Filter</p>
-			<Select value={this.state.chostid} onChange={this.changeHost} options={this.state.hostlist}/>
-			</div>
-			<div className="schild">
-			<p>Segment Selection</p>
-			<Select value={this.state.csetid} onChange={this.changeSegment} options={this.state.seglist}/>
-			</div>
-			<div className="schild">
-			<p>Delete all lines from current selected segment</p>
-			<button onClick={this.deleteSegmentLines} >Delete Segment Lines</button>
-			</div>
-		</div>
-		</Border>
-		<Border>
-		<div id="contain">
-		<canvas ref="drawable" onClick={this.state.canvashandler}/>
-		</div>
-		</Border>
-		<Border>
-		<div><p refs="display">{this.state.displaytext}</p></div>
-		</Border>
+<div>
+<KeyHandler keyEventName={KEYPRESS} keyValue=" " onKeyHandle={this.handleSpaceKey}/>
+<Border>
+<div id="selection">
+	<div className="schild">
+	<Link href="/"><a style={linkStyle}>Back to Home</a></Link>
+	<p refs="display">{this.state.displaytext}</p>
+	</div>
+	<div className="schild">
+	<p>Host Filter</p>
+	<Select
+			value={this.state.chostid}
+			onChange={this.changeHost}
+			options={this.state.hostlist}/>
+	</div>
+	<div className="schild">
+	<p>Segment Selection</p>
+	<Select
+			value={this.state.csetid}
+			onChange={this.changeSegment}
+			options={this.state.seglist}/>
+	</div>
+	<div className="schild">
+	<p>Delete all lines from current selected segment</p>
+	<button onClick={this.deleteSegmentLines} >Delete Segment Lines</button>
+	</div>
+</div>
+</Border>
 
-		<style jsx>{`
-		#contain {
-		width: ${this.props.mwidth}px;
-		height: ${this.props.mheight}px;
-		margin-top: 10px;
-		}
+<Container fluid>
+<Row style={rpStyle}>
+	<canvas ref="drawable" onClick={this.state.canvashandler}/>
+</Row>
+</Container>
 
-		#selection {
-		height: 100px;
-		}
+<style jsx>{`
+#selection {
+height: 100px;
+}
 
-		.schild {
-		float: left;
-		width: 400px;
-		margin-left: 10px;
-		margin-right: 10px;
-		}
-		`}</style>
-		</div>
+.schild {
+float: left;
+width: 400px;
+margin-left: 10px;
+margin-right: 10px;
+}
+`}</style>
+</div>
 		)
 	}
 }
 
 Editor.defaultProps = {
-	mwidth: 1340,
-	mheight:441,
-	mscale:1000, //not used for now
+	mheight: 750
 }
 
 export default AuthRequired(Editor)

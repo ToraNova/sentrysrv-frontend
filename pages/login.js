@@ -42,7 +42,7 @@ class Login extends Component {
 			if( e.response && (e.response.status == 401 || e.response.status == 400)){
 				//unauthorized (wrong creds or invalid input)
 				//change the worm image
-				this.refs.worm.src = "/icons/worm128-o.png"
+				this.refs.mainicon.src = "/icons/unauth.jpg"
 				this.refs.status.innerHTML = "Invalid login !"
 			}else{
 				Router.push('/error/[emsg]',`/error/${e}`)
@@ -51,11 +51,17 @@ class Login extends Component {
 	}
 
 	render () {
+		const iStyle = {
+			height: '200px',
+			width: '200px'
+		}
+
 		return (
 		<div>
 		<div className="login">
-		<img src="/icons/worm128.png" alt="worm128.png" ref="worm"/>
-		<h1>Wormy</h1>
+		<img style={iStyle} src="/icons/fence.png" alt="fence.png" ref="mainicon"/>
+		<h1>Setia</h1>
+		<h2>Perimeter Fence Monitoring v2</h2>
 		<form onSubmit={this.handleSubmit}>
 
 		<label htmlFor='email'>Email Login</label>

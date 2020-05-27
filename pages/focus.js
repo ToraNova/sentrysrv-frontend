@@ -67,12 +67,12 @@ class Focus extends Component {
 <Row>
 	<Col md={6}>
 	<Border>
-	<FocusPane value={this.state.alist[0]} onSubmit={this.aSubmit} onSelect={this.aSelect}/>
+	<FocusPane value={this.state.alist[0]} onSubmit={this.aSubmit} onSelect={this.aSelect} wsock={this.socket} lview={0}/>
 	</Border>
 	</Col>
 	<Col md={6}>
 	<Border>
-	<FocusPane value={this.state.alist[1]} onSubmit={this.aSubmit} onSelect={this.aSelect}/>
+	<FocusPane value={this.state.alist[1]} onSubmit={this.aSubmit} onSelect={this.aSelect} wsock={this.socket} lview={1}/>
 	</Border>
 	</Col>
 </Row>
@@ -80,12 +80,12 @@ class Focus extends Component {
 <Row>
 	<Col md={6}>
 	<Border>
-	<FocusPane value={this.state.alist[2]} onSubmit={this.aSubmit} onSelect={this.aSelect}/>
+	<FocusPane value={this.state.alist[2]} onSubmit={this.aSubmit} onSelect={this.aSelect} wsock={this.socket} lview={2}/>
 	</Border>
 	</Col>
 	<Col md={6}>
 	<Border>
-	<FocusPane value={this.state.alist[3]} onSubmit={this.aSubmit} onSelect={this.aSelect}/>
+	<FocusPane value={this.state.alist[3]} onSubmit={this.aSubmit} onSelect={this.aSelect} wsock={this.socket} lview={3}/>
 	</Border>
 	</Col>
 </Row>

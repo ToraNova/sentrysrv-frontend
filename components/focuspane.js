@@ -14,6 +14,24 @@ class FocusPane extends Component {
 	componentDidMount(){
 	}
 
+	componentDidUpdate(){
+		if(this.props.value == undefined){
+			//do nothing
+		}else if(this.props.value.Attachment == undefined){
+			//do nothing
+		}else{
+			//emit to live view, this goes directly to an MQTT broadcast
+			this.props.wsock.emit('focus/live', JSON.stringify(
+				{
+				fseg :this.props.value.fence_segment.id,
+				vnum :this.props.lview,
+				command: 'play'
+				}
+			)
+			)
+		}
+	}
+
 	componentWillUnmount() {
 	}
 

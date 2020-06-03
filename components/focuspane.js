@@ -21,6 +21,13 @@ class FocusPane extends Component {
 			//do nothing
 		}else{
 			//emit to live view, this goes directly to an MQTT broadcast
+			/*
+			this.props.wsock.emit('focus/live', JSON.stringify(
+				{
+					vnum : this.props.lview,
+					command: 'stop'
+				}
+			))
 			this.props.wsock.emit('focus/live', JSON.stringify(
 				{
 				fseg :this.props.value.fence_segment.id,
@@ -29,6 +36,7 @@ class FocusPane extends Component {
 				}
 			)
 			)
+			*/
 		}
 	}
 
@@ -171,12 +179,13 @@ this.props.value ?
 this.props.value ?
 butlist0.map( (but) => (
 <Button key={but.reason} block={true} variant={but.variant}
-type="submit" id={this.props.value.id} value={but.reason} onClick={this.props.onSubmit}>{but.reason}</Button>
+type="submit" id={this.props.value.id} value={this.props.lview}
+onClick={this.props.onSubmit}>{but.reason}</Button>
 ))
 :
 butlist0.map( (but) => (
 <Button key={but.reason} block={true} variant={but.variant}
-type="submit" value={but.reason} onClick={this.props.onSubmit} disabled>{but.reason}</Button>
+type="submit" disabled>{but.reason}</Button>
 ))
 }
 </Col>
@@ -186,12 +195,12 @@ type="submit" value={but.reason} onClick={this.props.onSubmit} disabled>{but.rea
 this.props.value ?
 butlist1.map( (but) => (
 <Button key={but.reason} block={true} variant={but.variant}
-type="submit" id={this.props.value.id} value={but.reason} onClick={this.props.onSubmit}>{but.reason}</Button>
+type="submit" id={this.props.value.id} value={this.props.lview} onClick={this.props.onSubmit}>{but.reason}</Button>
 ))
 :
 butlist1.map( (but) => (
 <Button key={but.reason} block={true} variant={but.variant}
-type="submit" value={but.reason} onClick={this.props.onSubmit} disabled>{but.reason}</Button>
+type="submit" disabled>{but.reason}</Button>
 ))
 }
 </Col>

@@ -100,14 +100,24 @@ class Focus extends Component {
 	aSubmit = (sel) => {
 		//console.log(sel.target.id)
 		//console.log(sel.target.value)
+		const vn = sel.target.value
+		console.log(vn)
 		const a = this.obtainEnt( sel.target.id, 'alist' )
-		a['Reason'] = sel.target.value
+		a['Reason'] = sel.target.innerText
 		this.props.auth.dfetch(`/alerts/${sel.target.id}`,{
 			method: 'PUT',
 			body: JSON.stringify(
 				a
 			)
 		}).then(res => {
+			/*
+			this.socket.emit('focus/live', JSON.stringify(
+				{
+					vnum : vn,
+					command: 'stop'
+				}
+			))
+			*/
 			this.socket.emit('focus/alert/highlight', '0')
 			setTimeout( function(socket){
 				//console.log('delayed request fire')
@@ -145,7 +155,25 @@ class Focus extends Component {
 	}
 
 	aSync = (al) => {
+		//stop all live view video
+		for(var i=0;i<4;i++){
+			this.socket.emit('focus/live', JSON.stringify(
+				{
+					vnum : i,
+					command: 'stop'
+				}
+			))
+		}
 		this.setState({alist:al},() => {
+			this.state.alist.forEach( (e,idx) => {
+				this.socket.emit('focus/live', JSON.stringify(
+					{
+					fseg :e.fence_segment.id,
+					vnum :idx,
+					command: 'play'
+					})
+				)
+			})
 		})
 	}
 

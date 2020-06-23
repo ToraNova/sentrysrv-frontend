@@ -20,7 +20,7 @@ const ErrorDisplay = () => {
 		<Layout>
 		<h1>{ emsg }</h1>
 		</Layout>
-		<Link href="/dashboard"><a style={linkStyle}>Back to Dashboard</a></Link>
+		<Link href="/"><a style={linkStyle}>Back to Dashboard</a></Link>
 
 		</div>
 }

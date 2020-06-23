@@ -16,7 +16,7 @@ module.exports = (phase, { defaultConfig }) => {
 
 	return {
 		env: {
-			backend_urlp: 'http://localhost:1337',
+			backend_urlp: 'http://192.168.21.96:1337',
 			mapfile: '/map.png'
 		},
 		crossOrigin: 'anonymous'

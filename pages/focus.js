@@ -121,7 +121,7 @@ class Focus extends Component {
 			this.socket.emit('focus/alert/highlight', '0')
 			setTimeout( function(socket){
 				//console.log('delayed request fire')
-				socket.emit('focus/init')
+				socket.emit('focus/init','{"count":"4"}')
 			}, 500, this.socket);
 		}).catch( function(e){
 			Router.push('/error/[emsg]',`/error/${e}`)
@@ -138,7 +138,7 @@ class Focus extends Component {
 
 	componentDidMount(){
 		this.socket = io.connect(process.env.backend_urlp)
-		this.socket.emit('focus/init')
+		this.socket.emit('focus/init','{"count":"4"}')
 
 		this.socket.on('focus/alert/data', (res) => {
 			const tmp = JSON.parse(res)
@@ -149,7 +149,7 @@ class Focus extends Component {
 			//start a timer, then emit an init later
 			setTimeout( function(socket){
 				//console.log('delayed request fire')
-				socket.emit('focus/init')
+				socket.emit('focus/init','{"count":"4"}')
 			}, 2000, this.socket);
 		})
 	}

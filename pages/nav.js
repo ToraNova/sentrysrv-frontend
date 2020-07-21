@@ -24,6 +24,7 @@ const linkStyle = {
 //	</div>
 //);
 
+//<Link href="/down"><a style={linkStyle}>Host Status Map</a></Link>
 const Nav = () => (
 	<div>
 	<Link href="/profile"><a style={linkStyle}>Profile</a></Link>

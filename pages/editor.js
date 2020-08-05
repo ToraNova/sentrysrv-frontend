@@ -11,6 +11,7 @@ import Router from 'next/router' //router
 // import from online
 import KeyHandler, { KEYPRESS } from 'react-key-handler';
 import Select from 'react-select';
+import { CompactPicker } from 'react-color'
 import { Container, Row, Col } from 'react-bootstrap';
 
 //custom components import
@@ -20,16 +21,30 @@ import Border from '../layouts/minimalist/border2.js'
 //requires authentication
 import AuthRequired from  '../utils/authreq.js'
 
+const g_inactdef = '#000000';
+const g_activdef = '#D33115';
+
 class Editor extends Component {
+
+	handleChange = (color) => {
+		this.setState({ scolor: color.hex });
+	};
+
+	handleChangeComplete = (color) => {
+		this.setState({ scolor: color.hex });
+	}
+
 
 	constructor(props){
 		super(props)
 		this.state = {
+			scolor: g_activdef,
 			displaytext: "Segment Editor",
 			canvashandler: this.handleStartDraw,
 			line:{
 				width:3,
-				style:'black'
+				style:g_activdef,
+				inact:g_inactdef
 			},
 			hostlist: [],
 			chostid: null,
@@ -60,9 +75,9 @@ class Editor extends Component {
 					//console.log(idx,sid, elem.fence_segment.id)
 					if(elem.fence_segment.id == sid){
 						//highlight
-						elem.Data['style']='red'
-					}
-					this.lineDraw(elem.Data)
+						this.lineDraw(elem.Data, true);
+						//elem.Data['style'] = elem.Data['inact']
+					}else this.lineDraw(elem.Data, false);
 				})
 			}).catch( function(e){
 				Router.push('/error/[emsg]',`/error/${e}`)
@@ -72,14 +87,18 @@ class Editor extends Component {
 	}
 
 	//line drawing function
-	lineDraw = (line) => {
+	lineDraw = (line, active) => {
 		//console.log('drawing',line)
 		const canvas = this.refs.drawable
 		const ctx = canvas.getContext('2d')
 		ctx.beginPath()
 		ctx.moveTo(line.sx,line.sy)
             	ctx.lineTo(line.ex,line.ey)
-		ctx.strokeStyle = line.style
+		if(active){
+			ctx.strokeStyle = line.style
+		}else{
+			ctx.strokeStyle = line.inact
+		}
 		ctx.lineWidth = line.width
             	ctx.stroke()
 		ctx.closePath()
@@ -163,12 +182,11 @@ class Editor extends Component {
 				ex:x,
 				ey:y,
 				width:this.state.line.width,
-				style:this.state.line.style,
+				style:this.state.scolor,
+				inact:g_inactdef
 			}
 		}, () => {
-			this.state.line['style'] = 'red' //temporary for highlighting
-			this.lineDraw(this.state.line)
-			this.state.line['style'] = 'black' //back to original
+			this.lineDraw(this.state.line, true)
 		})
 	}
 
@@ -180,6 +198,7 @@ class Editor extends Component {
 			this.state.line.ey &&
 			this.state.line.width &&
 			this.state.line.style &&
+			this.state.line.inact &&
 			this.state.csegid
 		){
 			//post the line
@@ -320,6 +339,13 @@ class Editor extends Component {
 			options={this.state.seglist}/>
 	</div>
 	<div className="schild">
+		<CompactPicker
+		color={ this.state.scolor }
+		onChange={ this.handleChange }
+		onChangeComplete={ this.handleChangeComplete }
+		/>
+	</div>
+	<div className="schild">
 	<p>Delete all lines from current selected segment</p>
 	<button onClick={this.deleteSegmentLines} >Delete Segment Lines</button>
 	</div>
@@ -339,7 +365,7 @@ height: 100px;
 
 .schild {
 float: left;
-width: 400px;
+width: 250px;
 margin-left: 10px;
 margin-right: 10px;
 }

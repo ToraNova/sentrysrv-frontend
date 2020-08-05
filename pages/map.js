@@ -45,13 +45,13 @@ class Map extends Component {
 	blinker = () => {
 		//console.log("Blinker expired, changing line color")
 		if(this.state.showlines){
-			this.fDraw(this.state.dlines, 'black')
+			this.fDraw(this.state.dlines, false)
 		}else{
 			this.fDraw()
 		}
 
 		if(this.state.blink){
-			this.mDraw(this.state.slines, 'red')
+			this.mDraw(this.state.slines, true)
 		}else{
 
 		}
@@ -109,16 +109,16 @@ class Map extends Component {
 	}
 
 	//foreground draw function
-	fDraw = ( lines = [], nstyle ) => {
+	fDraw = ( lines = [], act ) => {
 		this.state.ctx.drawImage(this.state.map, 0, 0, this.state.map.width, this.state.map.height, 0, 0, this.state.canvas.width, this.state.canvas.height)
-		if(nstyle == undefined) nstyle = 'red'
-		this.mDraw( lines, nstyle )
+		//if(nstyle == undefined) nstyle = 'red'
+		this.mDraw( lines, act )
 	}
 
-	mDraw = ( larray, nstyle) => {
+	mDraw = ( larray, act) => {
 		larray.forEach( (elem,idx) => {
-			elem.Data['style'] = nstyle
-			this.lineDraw(elem.Data)
+			//elem.Data['style'] = nstyle
+			this.lineDraw(elem.Data, act)
 		})
 	}
 
@@ -177,12 +177,16 @@ class Map extends Component {
 
 
 	//line drawing function
-	lineDraw = (line) => {
+	lineDraw = (line, activate) => {
 		//console.log('drawing',line)
 		this.state.ctx.beginPath()
 		this.state.ctx.moveTo(line.sx,line.sy)
             	this.state.ctx.lineTo(line.ex,line.ey)
-		this.state.ctx.strokeStyle = line.style
+		if(activate){
+			this.state.ctx.strokeStyle = line.style
+		}else{
+			this.state.ctx.strokeStyle = line.inact
+		}
 		this.state.ctx.lineWidth = line.width
             	this.state.ctx.stroke()
 		this.state.ctx.closePath()
@@ -250,8 +254,9 @@ class Map extends Component {
 				this.blinker, 500); //blink every 1 second
 			this.setState({blinkerd: blinkerd})
 		}else{
+			this.fDraw()
 			const hlines = this.obtainLines(sid)
-			this.mDraw(hlines, 'blue')
+			this.mDraw(hlines, true)
 		}
 
 	}

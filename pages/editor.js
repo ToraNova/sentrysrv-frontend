@@ -267,7 +267,10 @@ class Editor extends Component {
 	changeHost = (selectedOption) => {
 		this.setState({
 				chostid: selectedOption,
-				sseldis: true
+				sseldis: true,
+				csegid: 0,
+				seglist: [],
+				csegid: null,
 			},
 			() => {
 				//console.log(`Host selected:`, this.state.chostid)

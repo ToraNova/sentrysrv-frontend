@@ -34,6 +34,12 @@ class Editor extends Component {
 		this.setState({ scolor: color.hex });
 	}
 
+	handleError = (e) => {
+		console.log(e);
+		console.log(e.stack);
+		window.location.reload(false);//TODO experimental
+		//Router.push('/error/[emsg]',`/error/${e}`)
+	}
 
 	constructor(props){
 		super(props)
@@ -72,16 +78,14 @@ class Editor extends Component {
 			this.props.auth.dfetch('/draw-lines',{
 				method: 'GET'
 			}).then(res => {
+				//console.log(res);
 				res.forEach( (elem, idx) => {
 					//console.log(idx,sid, elem.fence_segment.id)
 					if(elem.fence_segment.id != sid)
 						this.lineDraw(elem.Data, false);
 				})
 			}).catch( function(e){
-				console.log('fdraw');
-				console.log(e);
-				console.log(e.stack);
-				Router.push('/error/[emsg]',`/error/${e}`)
+				handleError(e);
 			})
 
 			if(sid > 0){
@@ -95,10 +99,7 @@ class Editor extends Component {
 						//elem.Data['style'] = elem.Data['inact']
 					})
 				}).catch( function(e){
-					console.log(`fdraw ${sid}`);
-					console.log(e);
-					console.log(e.stack);
-					Router.push('/error/[emsg]',`/error/${e}`)
+					handleError(e);
 				})
 			}
 		}
@@ -139,10 +140,7 @@ class Editor extends Component {
 				hostlist: tmp
 			}))
 		}).catch( function(e){
-			console.log('mount-host');
-			console.log(e);
-			console.log(e.stack);
-			Router.push('/error/[emsg]',`/error/${e}`)
+			handleError(e);
 		})
 
 		//obtain the list of segments asynchronously
@@ -161,10 +159,7 @@ class Editor extends Component {
 
 			});
 		}).catch( function(e){
-			console.log('mount-fence');
-			console.log(e);
-			console.log(e.stack);
-			Router.push('/error/[emsg]',`/error/${e}`)
+			handleError(e);
 		})
 	}
 
@@ -247,18 +242,13 @@ class Editor extends Component {
 					},
 				}))
 			}).catch( function(e){
-				console.log('zkey');
-				console.log(e);
-				console.log(e.stack);
-				Router.push('/error/[emsg]',`/error/${e}`)
+				handleError(e);
 			})
 			//console.log("Registering new line for segment")
-
 		}else{
 			this.setState((state, props) => ({
 				displaytext: `Please click on new point first.`,
 			}))
-
 		}
 
 	}
@@ -293,10 +283,7 @@ class Editor extends Component {
 
 						});
 					}).catch( function(e){
-						console.log('nofilter');
-						console.log(e);
-						console.log(e.stack);
-						Router.push('/error/[emsg]',`/error/${e}`);
+						handleError(e);
 					})
 				}else{
 					this.props.auth.dfetch(`/fence-hosts/${this.state.chostid.value}`,
@@ -315,10 +302,7 @@ class Editor extends Component {
 
 						});
 					}).catch( function(e){
-						console.log('hostfilter');
-						console.log(e);
-						console.log(e.stack);
-						Router.push('/error/[emsg]',`/error/${e}`);
+						handleError(e);
 					})
 				}
 			}
@@ -354,17 +338,11 @@ class Editor extends Component {
 					//console.log(`DrawLine id:${elem.id} deleted.`)
 					this.fDraw(this.state.csegid.value)
 				}).catch( function(e){
-					console.log('delseg');
-					console.log(e);
-					console.log(e.stack);
-					Router.push('/error/[emsg]',`/error/${e}`)
+					handleError(e);
 				})
 			})
 		}).catch( function(e){
-			console.log('outerdel');
-			console.log(e);
-			console.log(e.stack);
-			Router.push('/error/[emsg]',`/error/${e}`)
+			handleError(e);
 		})
 	}
 

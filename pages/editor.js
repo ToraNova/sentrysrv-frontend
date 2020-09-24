@@ -74,14 +74,8 @@ class Editor extends Component {
 			}).then(res => {
 				res.forEach( (elem, idx) => {
 					//console.log(idx,sid, elem.fence_segment.id)
-					if(elem.fence_segment === null){
-					}else{
-					if(elem.fence_segment.id == sid){
-						//highlight
-						this.lineDraw(elem.Data, true);
-						//elem.Data['style'] = elem.Data['inact']
-					}else this.lineDraw(elem.Data, false);
-					}
+					if(elem.fence_segment.id != sid)
+						this.lineDraw(elem.Data, false);
 				})
 			}).catch( function(e){
 				console.log('fdraw');
@@ -90,6 +84,23 @@ class Editor extends Component {
 				Router.push('/error/[emsg]',`/error/${e}`)
 			})
 
+			if(sid > 0){
+				this.props.auth.dfetch(`/fence-segments/${sid}`,{
+					method: 'GET'
+				}).then(res => {
+					res.draw_lines.forEach( (elem, idx) => {
+						//console.log(idx,sid, elem.fence_segment.id)
+						//highlight
+						this.lineDraw(elem.Data, true);
+						//elem.Data['style'] = elem.Data['inact']
+					})
+				}).catch( function(e){
+					console.log(`fdraw ${sid}`);
+					console.log(e);
+					console.log(e.stack);
+					Router.push('/error/[emsg]',`/error/${e}`)
+				})
+			}
 		}
 	}
 

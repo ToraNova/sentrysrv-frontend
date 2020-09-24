@@ -240,22 +240,39 @@ class Editor extends Component {
 			() => {
 				//console.log(`Host selected:`, this.state.chostid)
 				//obtain the list of related segments asynchronously
-				this.props.auth.dfetch('/fence-segments',{
-					method: 'GET'
-				}).then(res => {
-					var tmp = []
-					res.forEach( (elem, idx) => {
-						if(elem.fence_host.id == this.state.chostid.value || this.state.chostid.value == 0 ){
-							tmp.push({value: elem.id, label:elem.SegmentName})
-						}
+				if(this.state.chostid.value == 0){
+					this.props.auth.dfetch(`/fence-hosts`,{
+						method: 'GET'
+					}).then(res => {
+						var tmp = []
+						res.forEach( (elem, idx) => {
+							elem.fence_segments.forEach( (elem2, i) => {
+								tmp.push({value: elem2.id, label:elem2.SegmentName})
+							});
+						});
+						this.setState((state, props) => ({
+							displaytext: "Segment list received. Select a segment to draw lines",
+							seglist: tmp
+						}));
+					}).catch( function(e){
+						Router.push('/error/[emsg]',`/error/${e}`);
 					})
-					this.setState((state, props) => ({
-						displaytext: "Segment list received. Select a segment to draw lines",
-						seglist: tmp
-					}))
-				}).catch( function(e){
-					Router.push('/error/[emsg]',`/error/${e}`)
-				})
+				}else{
+					this.props.auth.dfetch(`/fence-hosts/${this.state.chostid.value}`,{
+						method: 'GET'
+					}).then(res => {
+						var tmp = []
+						res.fence_segments.forEach( (elem, idx) => {
+							tmp.push({value: elem.id, label:elem.SegmentName})
+						});
+						this.setState((state, props) => ({
+							displaytext: "Segment list received. Select a segment to draw lines",
+							seglist: tmp
+						}));
+					}).catch( function(e){
+						Router.push('/error/[emsg]',`/error/${e}`);
+					})
+				}
 			}
 		);
 
@@ -278,21 +295,19 @@ class Editor extends Component {
 			window.alert("Please select segment first.");
 			return;
 		}
-		this.props.auth.dfetch('/draw-lines/',{
+		this.props.auth.dfetch(`/fence-segments/${this.state.csegid.value}`,{
 			method: 'GET'
 		}).then(res => {
-			res.forEach( (elem, idx) => {
-				if(elem.fence_segment.id == this.state.csegid.value){
-					//delete the line
-					this.props.auth.dfetch(`/draw-lines/${elem.id}`,{
-						method: 'DELETE'
-					}).then(res => {
-						//console.log(`DrawLine id:${elem.id} deleted.`)
-						this.fDraw(this.state.csegid.value)
-					}).catch( function(e){
-						Router.push('/error/[emsg]',`/error/${e}`)
-					})
-				}
+			res.draw_lines.forEach( (elem, idx) => {
+				//delete the line
+				this.props.auth.dfetch(`/draw-lines/${elem.id}`,{
+					method: 'DELETE'
+				}).then(res => {
+					//console.log(`DrawLine id:${elem.id} deleted.`)
+					this.fDraw(this.state.csegid.value)
+				}).catch( function(e){
+					Router.push('/error/[emsg]',`/error/${e}`)
+				})
 			})
 		}).catch( function(e){
 			Router.push('/error/[emsg]',`/error/${e}`)

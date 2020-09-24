@@ -32,14 +32,14 @@ class Editor extends Component {
 
 	handleChangeComplete = (color) => {
 		this.setState({ scolor: color.hex });
-	}
+	};
 
 	handleError = (e) => {
 		console.log(e);
 		console.log(e.stack);
-		window.location.reload(false);//TODO experimental
-		//Router.push('/error/[emsg]',`/error/${e}`)
-	}
+		//window.location.reload(false);//TODO experimental
+		Router.push('/error/[emsg]',`/error/${e}`)
+	};
 
 	constructor(props){
 		super(props)
@@ -84,9 +84,7 @@ class Editor extends Component {
 					if(elem.fence_segment.id != sid)
 						this.lineDraw(elem.Data, false);
 				})
-			}).catch( function(e){
-				handleError(e);
-			})
+			}).catch( (e) => this.handleError(e));
 
 			if(sid > 0){
 				this.props.auth.dfetch(`/fence-segments/${sid}`,{
@@ -98,9 +96,7 @@ class Editor extends Component {
 						this.lineDraw(elem.Data, true);
 						//elem.Data['style'] = elem.Data['inact']
 					})
-				}).catch( function(e){
-					handleError(e);
-				})
+				}).catch( (e) => this.handleError(e));
 			}
 		}
 	}
@@ -139,9 +135,7 @@ class Editor extends Component {
 				displaytext: "Host list received.",
 				hostlist: tmp
 			}))
-		}).catch( function(e){
-			handleError(e);
-		})
+		}).catch( (e) => this.handleError(e));
 
 		//obtain the list of segments asynchronously
 		this.props.auth.dfetch('/fence-segments',{
@@ -158,9 +152,7 @@ class Editor extends Component {
 			}, ()=> {
 
 			});
-		}).catch( function(e){
-			handleError(e);
-		})
+		}).catch( (e) => this.handleError(e));
 	}
 
 	//handler for starting a draw
@@ -241,9 +233,7 @@ class Editor extends Component {
 						style:'black'
 					},
 				}))
-			}).catch( function(e){
-				handleError(e);
-			})
+			}).catch( (e) => this.handleError(e));
 			//console.log("Registering new line for segment")
 		}else{
 			this.setState((state, props) => ({
@@ -282,9 +272,7 @@ class Editor extends Component {
 						}, () => {
 
 						});
-					}).catch( function(e){
-						handleError(e);
-					})
+					}).catch( (e) => this.handleError(e));
 				}else{
 					this.props.auth.dfetch(`/fence-hosts/${this.state.chostid.value}`,
 					{
@@ -301,9 +289,7 @@ class Editor extends Component {
 						}, () => {
 
 						});
-					}).catch( function(e){
-						handleError(e);
-					})
+					}).catch( (e) => this.handleError(e));
 				}
 			}
 		);
@@ -337,13 +323,9 @@ class Editor extends Component {
 				}).then(res => {
 					//console.log(`DrawLine id:${elem.id} deleted.`)
 					this.fDraw(this.state.csegid.value)
-				}).catch( function(e){
-					handleError(e);
-				})
+				}).catch( (e) => this.handleError(e));
 			})
-		}).catch( function(e){
-			handleError(e);
-		})
+		}).catch( (e) => this.handleError(e));
 	}
 
 	//Main render function

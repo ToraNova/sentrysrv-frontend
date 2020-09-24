@@ -83,6 +83,16 @@ class FocusPane extends Component {
 
 	}
 
+	dispAGI(){
+		if( this.props.value == undefined){
+		}else{
+			if( this.props.value.fence_segment != undefined ){
+				return `${this.props.value.fence_segment.SegmentInfo}`
+			}
+			return 'N/A'
+		}
+	}
+
 	timedisp(isostr) {
 		const d = new Date(isostr)
 		return d.toString()
@@ -157,6 +167,10 @@ this.dispImg().map((attach) => (
 <td>{this.dispHSB()}</td>
 </tr>
 <tr>
+<td>Alarm Group Info</td>
+<td>{this.dispAGI()}</td>
+</tr>
+<tr>
 <td>Alert Time</td>
 <td>{this.props.value ? this.timedisp(this.props.value.created_at) : 'N/A'}</td>
 </tr>
@@ -166,12 +180,6 @@ this.dispImg().map((attach) => (
 </tr>
 </tbody>
 </table>
-{
-this.props.value ?
-<Button block={true} variant='outline-info' value={this.props.value.fence_segment.id} onClick={this.props.onSelect}>Highlight on Map</Button>
-:
-<Button block={true} variant='outline-info' onClick={this.props.onSelect} disabled>Highlight on Map</Button>
-}
 </Col>
 
 <Col md={3}>
@@ -203,8 +211,15 @@ butlist1.map( (but) => (
 type="submit" disabled>{but.reason}</Button>
 ))
 }
-</Col>
 
+{
+this.props.value ?
+<Button block={true} variant='outline-info' value={this.props.value.fence_segment.id} onClick={this.props.onSelect}>Highlight on Map</Button>
+:
+<Button block={true} variant='outline-info' onClick={this.props.onSelect} disabled>Highlight on Map</Button>
+}
+
+</Col>
 
 </Row>
 
@@ -247,7 +262,7 @@ max-width: 100%;
 }
 
 FocusPane.defaultProps = {
-	imxheight: 375,
+	imxheight: 500,
 }
 
 export default FocusPane

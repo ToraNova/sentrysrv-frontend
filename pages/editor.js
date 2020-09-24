@@ -84,6 +84,9 @@ class Editor extends Component {
 					}
 				})
 			}).catch( function(e){
+				console.log('fdraw');
+				console.log(e);
+				console.log(e.stack);
 				Router.push('/error/[emsg]',`/error/${e}`)
 			})
 
@@ -125,6 +128,9 @@ class Editor extends Component {
 				hostlist: tmp
 			}))
 		}).catch( function(e){
+			console.log('mount-host');
+			console.log(e);
+			console.log(e.stack);
 			Router.push('/error/[emsg]',`/error/${e}`)
 		})
 
@@ -144,6 +150,9 @@ class Editor extends Component {
 
 			});
 		}).catch( function(e){
+			console.log('mount-fence');
+			console.log(e);
+			console.log(e.stack);
 			Router.push('/error/[emsg]',`/error/${e}`)
 		})
 	}
@@ -227,6 +236,9 @@ class Editor extends Component {
 					},
 				}))
 			}).catch( function(e){
+				console.log('zkey');
+				console.log(e);
+				console.log(e.stack);
 				Router.push('/error/[emsg]',`/error/${e}`)
 			})
 			//console.log("Registering new line for segment")
@@ -267,6 +279,9 @@ class Editor extends Component {
 
 						});
 					}).catch( function(e){
+						console.log('nofilter');
+						console.log(e);
+						console.log(e.stack);
 						Router.push('/error/[emsg]',`/error/${e}`);
 					})
 				}else{
@@ -286,6 +301,9 @@ class Editor extends Component {
 
 						});
 					}).catch( function(e){
+						console.log('hostfilter');
+						console.log(e);
+						console.log(e.stack);
 						Router.push('/error/[emsg]',`/error/${e}`);
 					})
 				}
@@ -322,10 +340,16 @@ class Editor extends Component {
 					//console.log(`DrawLine id:${elem.id} deleted.`)
 					this.fDraw(this.state.csegid.value)
 				}).catch( function(e){
+					console.log('delseg');
+					console.log(e);
+					console.log(e.stack);
 					Router.push('/error/[emsg]',`/error/${e}`)
 				})
 			})
 		}).catch( function(e){
+			console.log('outerdel');
+			console.log(e);
+			console.log(e.stack);
 			Router.push('/error/[emsg]',`/error/${e}`)
 		})
 	}

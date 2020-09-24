@@ -49,7 +49,8 @@ class Editor extends Component {
 			hostlist: [],
 			chostid: null,
 			seglist: [],
-			csegid: null
+			csegid: null,
+			sseldis: true
 		}
 	}
 
@@ -73,11 +74,14 @@ class Editor extends Component {
 			}).then(res => {
 				res.forEach( (elem, idx) => {
 					//console.log(idx,sid, elem.fence_segment.id)
+					if(elem.fence_segment === null){
+					}else{
 					if(elem.fence_segment.id == sid){
 						//highlight
 						this.lineDraw(elem.Data, true);
 						//elem.Data['style'] = elem.Data['inact']
 					}else this.lineDraw(elem.Data, false);
+					}
 				})
 			}).catch( function(e){
 				Router.push('/error/[emsg]',`/error/${e}`)
@@ -132,10 +136,13 @@ class Editor extends Component {
 			res.forEach( (elem, idx) => {
 				tmp.push({value: elem.id, label:elem.SegmentName})
 			})
-			this.setState((state, props) => ({
+			this.setState({
 				displaytext: "Segment list received. Select a segment to draw lines",
-				seglist: tmp
-			}))
+				seglist: tmp,
+				sseldis: false
+			}, ()=> {
+
+			});
 		}).catch( function(e){
 			Router.push('/error/[emsg]',`/error/${e}`)
 		})
@@ -173,7 +180,7 @@ class Editor extends Component {
 		const y = event.nativeEvent.layerY - canvas.offsetTop
 		//console.log('end',event.nativeEvent,canvas.offsetLeft,canvas.offsetTop)
 		this.setState({
-			displaytext: `Hit spacebar to register new line for \
+			displaytext: `Hit 'z' to register new line for \
 			Segment:${this.state.csegid.label}. Or click on map to redraw.`,
 			canvashandler: this.handleStartDraw,
 			line:{
@@ -190,8 +197,8 @@ class Editor extends Component {
 		})
 	}
 
-	//handler for spacebar, to save a line segment
-	handleSpaceKey = (event) => {
+	//handler for z, to save a line segment
+	handlezkey = (event) => {
 		if( this.state.line.sx &&
 			this.state.line.sy &&
 			this.state.line.ex &&
@@ -235,8 +242,10 @@ class Editor extends Component {
 
 	//Changing a Host
 	changeHost = (selectedOption) => {
-		this.setState(
-			{chostid: selectedOption},
+		this.setState({
+				chostid: selectedOption,
+				sseldis: true
+			},
 			() => {
 				//console.log(`Host selected:`, this.state.chostid)
 				//obtain the list of related segments asynchronously
@@ -250,25 +259,32 @@ class Editor extends Component {
 								tmp.push({value: elem2.id, label:elem2.SegmentName})
 							});
 						});
-						this.setState((state, props) => ({
+						this.setState({
 							displaytext: "Segment list received. Select a segment to draw lines",
-							seglist: tmp
-						}));
+							seglist: tmp,
+							sseldis: false
+						}, () => {
+
+						});
 					}).catch( function(e){
 						Router.push('/error/[emsg]',`/error/${e}`);
 					})
 				}else{
-					this.props.auth.dfetch(`/fence-hosts/${this.state.chostid.value}`,{
+					this.props.auth.dfetch(`/fence-hosts/${this.state.chostid.value}`,
+					{
 						method: 'GET'
 					}).then(res => {
 						var tmp = []
 						res.fence_segments.forEach( (elem, idx) => {
 							tmp.push({value: elem.id, label:elem.SegmentName})
 						});
-						this.setState((state, props) => ({
+						this.setState({
 							displaytext: "Segment list received. Select a segment to draw lines",
-							seglist: tmp
-						}));
+							seglist: tmp,
+							sseldis: false
+						}, () => {
+
+						});
 					}).catch( function(e){
 						Router.push('/error/[emsg]',`/error/${e}`);
 					})
@@ -332,7 +348,7 @@ class Editor extends Component {
 
 		return (
 <div>
-<KeyHandler keyEventName={KEYPRESS} keyValue=" " onKeyHandle={this.handleSpaceKey}/>
+<KeyHandler keyEventName={KEYPRESS} keyValue="z" onKeyHandle={this.handlezkey}/>
 <Border>
 <div id="selection">
 	<div className="schild">
@@ -351,7 +367,8 @@ class Editor extends Component {
 	<Select
 			value={this.state.csetid}
 			onChange={this.changeSegment}
-			options={this.state.seglist}/>
+			options={this.state.seglist}
+			disabled={this.state.sseldis}/>
 	</div>
 	<div className="schild">
 		<CompactPicker

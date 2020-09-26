@@ -114,7 +114,8 @@ class Editor extends Component {
 		}else{
 			ctx.strokeStyle = line.inact
 		}
-		ctx.lineWidth = line.width
+		//hackish way to fix things!
+		ctx.lineWidth = line.width*2
             	ctx.stroke()
 		ctx.closePath()
 	}

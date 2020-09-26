@@ -187,7 +187,8 @@ class Map extends Component {
 		}else{
 			this.state.ctx.strokeStyle = line.inact
 		}
-		this.state.ctx.lineWidth = line.width
+		//hackish way to fix thing!
+		this.state.ctx.lineWidth = line.width*2
             	this.state.ctx.stroke()
 		this.state.ctx.closePath()
 	}

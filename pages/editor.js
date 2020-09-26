@@ -63,7 +63,7 @@ class Editor extends Component {
 	fDraw = (sid = 0) => {
 		const canvas = this.refs.drawable
 		const img = new Image()
-		img.src = '/map.png'
+		img.src = process.env.mapfile
 		const ctx = canvas.getContext('2d')
 		canvas.style.width = '100%'
 		canvas.style.height = '100%'
@@ -115,7 +115,7 @@ class Editor extends Component {
 			ctx.strokeStyle = line.inact
 		}
 		//hackish way to fix things!
-		ctx.lineWidth = line.width*2
+		ctx.lineWidth = line.width+2
             	ctx.stroke()
 		ctx.closePath()
 	}

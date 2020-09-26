@@ -39,6 +39,7 @@ class Map extends Component {
 			showlines: false,
 			blink: false
 		}
+		this.asound = new Audio(process.env.soundfile);
 	}
 
 	//repeating timer
@@ -50,10 +51,13 @@ class Map extends Component {
 			this.fDraw()
 		}
 
+		if(this.state.alist.length > 0){
+			this.asound.play();
+		}
+
 		if(this.state.blink){
 			this.mDraw(this.state.slines, true)
 		}else{
-
 		}
 
 		//invert blink
@@ -169,6 +173,8 @@ class Map extends Component {
 			tar.splice(tmp, 1)
 			this.setState({
 				alist: tar
+			}, ()=> {
+				//donothing
 			})
 			//sync the lines with alert
 			this.syncLines()
@@ -188,7 +194,7 @@ class Map extends Component {
 			this.state.ctx.strokeStyle = line.inact
 		}
 		//hackish way to fix thing!
-		this.state.ctx.lineWidth = line.width*2
+		this.state.ctx.lineWidth = line.width+2
             	this.state.ctx.stroke()
 		this.state.ctx.closePath()
 	}
@@ -225,6 +231,8 @@ class Map extends Component {
 					const tmp = JSON.parse(res)
 					this.setState({alist:tmp},() => {
 						this.syncLines()
+						if(this.state.alist.length > 0)
+							this.asound.play();
 					})
 				})
 
@@ -233,6 +241,9 @@ class Map extends Component {
 					this.syncLine(tmp)
 					this.setState({
 						alist: this.state.alist.concat(tmp)
+					}, ()=>{
+						if(this.state.alist.length > 0)
+							this.asound.play();
 					})
 				})
 

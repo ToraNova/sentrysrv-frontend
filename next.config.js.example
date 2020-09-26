@@ -7,7 +7,8 @@ module.exports = (phase, { defaultConfig }) => {
 		return {
 			env: {
 				backend_urlp: 'http://localhost:1337',
-				mapfile: '/map.png'
+				mapfile: '/map.png',
+				soundfile: '/sounds/short02.mp3'
 			},
 			crossOrigin: 'anonymous'
 		/* development only config options here */
@@ -17,7 +18,8 @@ module.exports = (phase, { defaultConfig }) => {
 	return {
 		env: {
 			backend_urlp: 'http://192.168.21.96:1337',
-			mapfile: '/map.png'
+			mapfile: '/map.png',
+			soundfile: '/sounds/short02.mp3'
 		},
 		crossOrigin: 'anonymous'
 		/* config options for all phases except development here */

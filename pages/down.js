@@ -36,6 +36,7 @@ class Map extends Component {
 			slist: [],
 			dlines: [],
 			slines: [],
+			hlist: [],
 			showlines: false,
 		}
 	}
@@ -161,100 +162,90 @@ class Map extends Component {
 	//line drawing function
 	lineDraw = (line) => {
 		//console.log('drawing',line)
-		this.state.ctx.beginPath()
-		this.state.ctx.moveTo(line.sx,line.sy)
-            	this.state.ctx.lineTo(line.ex,line.ey)
-		this.state.ctx.strokeStyle = line.style
-		this.state.ctx.lineWidth = line.width
-            	this.state.ctx.stroke()
-		this.state.ctx.closePath()
-	}
-
-	checkUpdate = (host) => {
-		//assume not updating
-		//console.log('update',a)
-		var tmp = -1
-		var tar = this.state.hlist
-		this.state.hlist.forEach( (elem,idx) => {
-			//if alert is in our list and its previous reason is null
-			if(elem.id == host.id && !elem.RepliedPing && host.RepliedPing ){
-				//this meant elem has updated, no longer needs to blink
-				tmp = idx
-			}
-		})
-		console.log(tmp)
-		//if updated
-		if(tmp > -1){
-			//splice (remove)
-			tar.splice(tmp,1)
-			this.setState({hlist:tar}, () => {
-				//sync the lines with alert
-				this.syncLines()
-				console.log('hls',this.state.hlist)
-			})
-		}
+		this.state.ctx.beginPath();
+		this.state.ctx.moveTo(line.sx,line.sy);
+            	this.state.ctx.lineTo(line.ex,line.ey);
+		this.state.ctx.strokeStyle = line.style;
+		this.state.ctx.lineWidth = line.width;
+            	this.state.ctx.stroke();
+		this.state.ctx.closePath();
 	}
 
 	componentDidMount(){
 		//console.log('dashboard-mounted')
-		this.socket = io.connect(process.env.backend_urlp)
-		this.socket.emit('down/init')
+		this.socket = io.connect(process.env.backend_urlp);
+		this.socket.emit('down/init');
 
-		const canvas = this.refs.drawable
-		const ctx = canvas.getContext('2d')
-		const img = new Image()
-		img.src = process.env.mapfile
-		canvas.style.width = '100%'
-		canvas.style.height = '100%'
-		canvas.width = canvas.offsetWidth
-		canvas.height = canvas.offsetHeight
+		const canvas = this.refs.drawable;
+		const ctx = canvas.getContext('2d');
+		const img = new Image();
+		img.src = process.env.mapfile;
+		canvas.style.width = '100%';
+		canvas.style.height = '100%';
+		canvas.width = canvas.offsetWidth;
+		canvas.height = canvas.offsetHeight;
 
 		img.onload = () => {
 			this.setState({map: img, ctx: ctx, canvas: canvas},
 				() => {
-				this.fDraw() //refresh
-			})
+					this.fDraw(); //refresh
+				})
 
 			//obtain line informations
 			this.socket.on('down/line/data', (res) => {
-			this.setState({dlines: JSON.parse(res)}, () => {
+				this.setState({dlines: JSON.parse(res)}, () => {
 
-				//obtain alerts
-				this.socket.on('down/alert/data', (res) => {
-					//final block. here segment/line and alert are ready
-					const tmp = JSON.parse(res)
-					this.setState({hlist:tmp},() => {
-						this.syncLines()
+					//obtain alerts
+					this.socket.on('down/alert/data', (res) => {
+						//final block. here segment/line and alert are ready
+						const tmp = JSON.parse(res);
+						this.setState({hlist:tmp},() => {
+							this.syncLines();
+						})
 					})
-				})
 
-				this.socket.on('down/alert/new', (res) => {
-					const tmp = JSON.parse(res)
-					console.log('new',tmp[0])
-					this.setState({hlist: this.state.hlist.concat(tmp)},()=> {
-						this.syncLines()
+					this.socket.on('down/alert/new', (res) => {
+						const tmp = JSON.parse(res);
+						this.setState({hlist: this.state.hlist.concat(tmp)},()=> {
+							this.syncLines();
+						})
 					})
-				})
 
-				this.socket.on('down/alert/update', (res) => {
-					const tmp = JSON.parse(res)
-					console.log('hls',this.state.hlist)
-					console.log('upd',tmp[0])
-					this.checkUpdate(tmp[0])
-				})
+					this.socket.on('down/alert/update', (res) => {
+						var host = JSON.parse(res);
+						var tmp = -1;
+						var tar = this.state.hlist;
+						this.state.hlist.forEach( (elem,idx) => {
+							//if alert is in our list and its previous reason is null
+							if(elem.id == host.id && !elem.RepliedPing && host.RepliedPing ){
+								//this meant elem has updated, no longer needs to blink
+								tmp = idx;
+							}
+						})
+						//if updated
+						if(tmp > -1){
+							//splice (remove)
+							tar.splice(tmp,1);
+							this.setState({hlist:tar}, () => {
+								//sync the lines with alert
+								this.syncLines();
+								//console.log('hls',this.state.hlist);
+							})
+						}
+					})
 
-			})
+				})
 			})
 		}
 	}
 
 	componentWillUnmount() {
 		//stop timers
-		this.socket.off('down/line/data')
-		this.socket.off('down/alert/data')
-		this.socket.off('down/alert/new')
-		this.socket.off('down/alert/update')
-    		this.socket.close()
+		this.socket.off('down/line/data');
+		this.socket.off('down/alert/data');
+		this.socket.off('down/alert/new');
+		this.socket.off('down/alert/update');
+    		this.socket.close();
 	}
 
 }

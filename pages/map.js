@@ -151,7 +151,7 @@ class Map extends Component {
 	//due to strapi having different models
 	syncLine = (a) => {
 		this.setState({slines:
-			this.state.slines.concat( this.obtainLines( a.fence_segment ) )
+			this.state.slines.concat( this.obtainLines( a.fence_segment.id ) )
 		})
 	}
 
@@ -228,7 +228,7 @@ class Map extends Component {
 				//obtain alerts
 				this.socket.on('map/alert/data', (res) => {
 					//final block. here segment/line and alert are ready
-					const tmp = JSON.parse(res)
+					const tmp = JSON.parse(res);
 					this.setState({alist:tmp},() => {
 						this.syncLines()
 						if(this.state.alist.length > 0)
@@ -237,8 +237,9 @@ class Map extends Component {
 				})
 
 				this.socket.on('map/alert/new', (res) => {
-					const tmp = JSON.parse(res)
-					this.syncLine(tmp)
+					const tmp = JSON.parse(res);
+					console.log(tmp);
+					this.syncLine(tmp);
 					this.setState({
 						alist: this.state.alist.concat(tmp)
 					}, ()=>{
@@ -248,13 +249,13 @@ class Map extends Component {
 				})
 
 				this.socket.on('map/alert/update', (res) => {
-					this.checkUpdate(JSON.parse(res))
+					this.checkUpdate(JSON.parse(res));
 				})
 
 			})
 			})
 
-			this.socket.on('map/alert/highlight', this.handleHighlight)
+			this.socket.on('map/alert/highlight', this.handleHighlight);
 		}
 	}
 

@@ -6,34 +6,46 @@
 
 //Link API from Next.js
 import Link from 'next/link';
+import React, {Component} from 'react'
+import AuthRequired from  '../utils/authreq.js'
 
 //Style
 const linkStyle = {
 	marginRight: 15
 };
 
-//Main Nav component
-//const Nav = () => (
-//	<div>
-//	<Link href="/"><a style={linkStyle}>Home</a></Link>
-//	<Link href="/about"><a style={linkStyle}>About</a></Link>
-//	<Link href="/profile"><a style={linkStyle}>Profile</a></Link>
-//	<Link href="/login"><a style={linkStyle}>Login</a></Link>
-//	<Link href="/signup"><a style={linkStyle}>Signup</a></Link>
-//	<Link href="/logout"><a style={linkStyle}>Logout</a></Link>
-//	</div>
-//);
+class Nav extends Component{
 
-const Nav = () => (
-	<div>
-	<Link href="/profile"><a style={linkStyle}>Profile</a></Link>
-	<Link href="/map"><a style={linkStyle}>Map</a></Link>
-	<Link href="/focus"><a style={linkStyle}>Focus</a></Link>
-	<Link href="/down"><a style={linkStyle}>Host Status Map</a></Link>
-	<Link href="/editor"><a style={linkStyle}>Editor</a></Link>
-	<Link href="/login"><a style={linkStyle}>Login</a></Link>
-	<Link href="/logout"><a style={linkStyle}>Logout</a></Link>
-	</div>
-);
+	sview(){
 
-export default Nav;
+	}
+
+	render() {
+		const user = this.props.auth.getProfile()
+		return(
+			<div>
+			<Link href="/profile"><a style={linkStyle}>Profile</a></Link>
+			{user.role.name === "Supervisor" ?
+			<>
+			<Link href="/view"><a style={linkStyle}>View Alerts</a></Link>
+			</>
+			:
+			<>
+			<Link href="/map"><a style={linkStyle}>Map</a></Link>
+			<Link href="/focus"><a style={linkStyle}>Focus</a></Link>
+			<Link href="/down"><a style={linkStyle}>Host Status Map</a></Link>
+			<Link href="/editor"><a style={linkStyle}>Editor</a></Link>
+			</>
+			}
+			{
+			user === null ?
+			<Link href="/login"><a style={linkStyle}>Login</a></Link>
+			:
+			<Link href="/logout"><a style={linkStyle}>Logout</a></Link>
+			}
+			</div>
+		)
+	}
+}
+
+export default AuthRequired(Nav);

@@ -26,6 +26,13 @@ import AuthRequired from  '../utils/authreq.js'
 
 class Focus extends Component {
 
+	handleError = (e) => {
+		console.log(e);
+		console.log(e.stack);
+		//window.location.reload(false);//TODO experimental
+		Router.push('/error/[emsg]',`/error/${e}`)
+	};
+
 	constructor(props){
 		super(props)
 		this.state = {
@@ -123,9 +130,7 @@ class Focus extends Component {
 				//console.log('delayed request fire')
 				socket.emit('focus/init','{"count":"4"}')
 			}, 500, this.socket);
-		}).catch( function(e){
-			Router.push('/error/[emsg]',`/error/${e}`)
-		})
+		}).catch( (e) => this.handleError(e));
 	}
 
 	aSelect = (sel) => {

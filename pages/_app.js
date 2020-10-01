@@ -2,6 +2,9 @@
 
 // importing global stylesheets
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import '../node_modules/react-datepicker/dist/react-datepicker.css'
+import '../node_modules/rc-input-number/assets/index.css'
+import "../node_modules/react-image-lightbox/style.css";
 
 function MyApp({ Component, pageProps }) {
 	return <Component {...pageProps} />

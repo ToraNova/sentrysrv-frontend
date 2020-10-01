@@ -57,6 +57,7 @@ class AlertView extends Component {
 		this.state = {
 			imview: false,
 			imurl: null,
+			enableq: false,
 			hostdat: [],
 			alist: [],
 			hostlist: [],
@@ -208,8 +209,13 @@ onChange={this.changeEDate}/></div>
 <hr></hr>
 <Row>
 	<Col>
+		{this.state.enableq ?
 		<Button block={true} variant="outline-primary"
 		type="submit" onClick={this.submitQ}>Query</Button>
+		:
+		<Button block={true} variant="outline-primary" disabled
+		type="submit" onClick={this.submitQ}>Query</Button>
+		}
 	</Col>
 </Row>
 <hr></hr>
@@ -316,6 +322,8 @@ onChange={this.changeEDate}/></div>
 				this.buildTable(tmp,e);
 			});
 			}
+			console.log('done');
+			console.log(tmp);
 			this.setState({displayText:'',alist:tmp}, () =>{
 				if(this.state.alist.length === 0){
 					this.setState({displayText: "no result"});
@@ -350,7 +358,8 @@ onChange={this.changeEDate}/></div>
 			})
 			this.setState({
 				seglist: tmp,
-				fsegid: 0
+				fsegid: 0,
+				enableq: true
 			})
 		}).catch( (e) => this.handleError(e));
 

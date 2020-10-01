@@ -278,7 +278,8 @@ onChange={this.changeEDate}/></div>
 
 	submitQ = (val) => {
 
-		var qurl = `/alerts?_start=0`
+		//var qurl = `/alerts?_start=0`
+		var qurl = `/alerts?created_at_gt=${this.state.fsdate.toISOString()}&created_at_lt=${this.state.fedate.toISOString()}`
 
 		if(this.state.flimit > 0){
 			//works
@@ -305,23 +306,21 @@ onChange={this.changeEDate}/></div>
 			qurl += `&OriginBranch=${this.state.fbranch.value}`;
 		}
 
+		//console.log(qurl)
+
 		this.props.auth.dfetch(
 		qurl,
 		{method:'GET'}).then( res => {
 			var tmp = []
-			var cdate;
+			//console.log(res);
 			if(this.state.fhostid.value > 0){
 			res.forEach( (e, i) => {
-				cdate = new Date(e.created_at);
-				if( cdate >= this.state.fsdate && cdate <= this.state.fedate
-				&& e.fence_segment.fence_host === this.state.fhostid.value)
+				if(e.fence_segment.fence_host === this.state.fhostid.value)
 					this.buildTable(tmp,e);
 			});
 			}else{
 			res.forEach( (e, i) => {
-				cdate = new Date(e.created_at);
-				if( cdate >= this.state.fsdate && cdate <= this.state.fedate)
-					this.buildTable(tmp,e);
+				this.buildTable(tmp,e);
 			});
 			}
 			this.setState({displayText:'',alist:tmp}, () =>{

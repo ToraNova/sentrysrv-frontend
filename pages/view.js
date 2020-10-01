@@ -68,7 +68,7 @@ class AlertView extends Component {
 			ftypeid: defo,
 			fsdate: now,
 			fedate: tmr,
-			flimit: 0,
+			flimit: 30,
 			freason: {value:"Any", label:"Any Reason"},
 			displayText: '',
 		}

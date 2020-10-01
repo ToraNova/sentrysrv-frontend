@@ -68,7 +68,7 @@ class AlertView extends Component {
 			ftypeid: defo,
 			fsdate: now,
 			fedate: tmr,
-			flimit: 30,
+			flimit: 0,
 			freason: {value:"Any", label:"Any Reason"},
 			displayText: '',
 		}
@@ -89,7 +89,7 @@ class AlertView extends Component {
 			box: hname,
 			ctime: new Date(a.created_at).toLocaleString(),
 			utime: new Date(a.updated_at).toLocaleString(),
-			url: a.Attachment[0].url
+			url : a.Attachment.length > 0 ? a.Attachment[0].url : null
 		}
 		table.push(e);
 	};
@@ -140,17 +140,6 @@ class AlertView extends Component {
 			marginLeft: '10px',
 			marginRight: '10px'
 		}
-
-		const ExampleCustomTimeInput = ({ value, onChange }) => (
-			<input
-			value={value}
-			onChange={e => onChange(e.target.value)}
-			style={{ border: "solid 1px red" }}
-			/>
-		);
-
-		//either showTimeInput or showTimeSelect
-
 
 		return (
 <div>
@@ -273,7 +262,11 @@ onChange={this.changeEDate}/></div>
 
 	handleTableClick = (evnt, row) => {
 		//console.log(row);
-		this.setState({imurl:process.env.backend_urlp+row.url, imview: true })
+		if(row.url !== null){
+			this.setState({imurl:process.env.backend_urlp+row.url, imview: true });
+		}else{
+			alert('no image captured for this alert.');
+		}
 	}
 
 	submitQ = (val) => {

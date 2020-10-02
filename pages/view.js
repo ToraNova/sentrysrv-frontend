@@ -77,6 +77,7 @@ class AlertView extends Component {
 
 	buildTable = (table, a) => {
 		var hname = "n/a";
+		console.log('a',a);
 		this.state.hostdat.forEach( (h,i) => {
 			if(h.id == a.fence_segment.fence_host)
 				hname = h.HostName
@@ -85,13 +86,14 @@ class AlertView extends Component {
 			id: a.id,
 			rea: a.Reason,
 			ori: a.OriginBranch,
-			agp: a.fence_segment.SegmentInfo,
-			seg: a.fence_segment.SegmentName,
+			agp: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentInfo,
+			seg: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentName,
 			box: hname,
 			ctime: new Date(a.created_at).toLocaleString(),
 			utime: new Date(a.updated_at).toLocaleString(),
 			url : a.Attachment.length > 0 ? a.Attachment[0].url : null
 		}
+		console.log('b',e);
 		table.push(e);
 	};
 
@@ -311,7 +313,7 @@ onChange={this.changeEDate}/></div>
 		qurl,
 		{method:'GET'}).then( res => {
 			var tmp = []
-			//console.log(res);
+			console.log('recv',res.length);
 			if(this.state.fhostid.value > 0){
 			res.forEach( (e, i) => {
 				if(e.fence_segment.fence_host === this.state.fhostid.value)
@@ -322,8 +324,7 @@ onChange={this.changeEDate}/></div>
 				this.buildTable(tmp,e);
 			});
 			}
-			console.log('done');
-			console.log(tmp);
+			console.log('done',tmp.length);
 			this.setState({displayText:'',alist:tmp}, () =>{
 				if(this.state.alist.length === 0){
 					this.setState({displayText: "no result"});

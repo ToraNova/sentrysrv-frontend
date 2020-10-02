@@ -51,8 +51,8 @@ class AlertView extends Component {
 	constructor(props){
 		super(props)
 		var now = new Date();
-		var tmr = new Date();
-		tmr.setDate(tmr.getDate() + 1);
+		var ytd = new Date();
+		ytd.setDate(ytd.getDate() - 1);
 		const defo = {value: 0, label: 'Any'}
 		this.state = {
 			imview: false,
@@ -67,8 +67,8 @@ class AlertView extends Component {
 			fsegid: defo,
 			fbranch: {value:-1, label: 'Any Branch'},
 			ftypeid: defo,
-			fsdate: now,
-			fedate: tmr,
+			fsdate: ytd,
+			fedate: now,
 			flimit: 0,
 			freason: {value:"Any", label:"Any Reason"},
 			displayText: '',
@@ -159,6 +159,28 @@ class AlertView extends Component {
 	<Link href="/"><a style={hlink} >Back to Home</a></Link>
 	</Col>
 </Row>
+<MaterialTable
+	title="Triggered Alerts"
+	data={this.state.alist}
+	columns={tableHeader}
+	options={{ search: true, paging: true, exportButton: true }}
+	icons={{
+		SortArrow: () => <ArrowDropDown />,
+		ResetSearch: () => <Clear />,
+		Check: () => <Check />,
+		Export: () => <SaveAlt />,
+		Filter: () => <FilterList />,
+		FirstPage: () => <FirstPage />,
+		LastPage: () => <LastPage />,
+		NextPage: () => <ChevronRight />,
+		PreviousPage: () => <ChevronLeft />,
+		Search: () => <Search />,
+		ThirdStateCheck: () => <Remove />,
+		ViewColumn: () => <ViewColumn />,
+		DetailPanel: () => <ChevronRight />
+	}}
+	onRowClick={this.handleTableClick}
+/>
 <Row style={ctStyle}><Col>
 <p style={{color:'blue'}}>Query Form</p>
 <Row>
@@ -224,28 +246,6 @@ onChange={this.changeEDate}/></div>
 </Row>
 <hr></hr>
 </Col></Row>
-<MaterialTable
-	title="Triggered Alerts"
-	data={this.state.alist}
-	columns={tableHeader}
-	options={{ search: true, paging: true, exportButton: true }}
-	icons={{
-		SortArrow: () => <ArrowDropDown />,
-		ResetSearch: () => <Clear />,
-		Check: () => <Check />,
-		Export: () => <SaveAlt />,
-		Filter: () => <FilterList />,
-		FirstPage: () => <FirstPage />,
-		LastPage: () => <LastPage />,
-		NextPage: () => <ChevronRight />,
-		PreviousPage: () => <ChevronLeft />,
-		Search: () => <Search />,
-		ThirdStateCheck: () => <Remove />,
-		ViewColumn: () => <ViewColumn />,
-		DetailPanel: () => <ChevronRight />
-	}}
-	onRowClick={this.handleTableClick}
-/>
 {this.state.imview && (
           <Lightbox
             mainSrc={this.state.imurl}

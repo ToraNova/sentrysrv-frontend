@@ -77,27 +77,23 @@ class AlertView extends Component {
 
 	buildTable = (table, a) => {
 		console.log('a',a);
-		try{
-			var hname = "n/a";
-			if(a.fence_segment !== null){
-				this.state.hostdat.forEach( (h,i) => {
-					if(h.id == a.fence_segment.fence_host)
-						hname = h.HostName
-				});
-			}
-			const e = {
-				id: a.id,
-				rea: a.Reason,
-				ori: a.OriginBranch,
-				agp: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentInfo,
-				seg: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentName,
-				box: hname,
-				ctime: new Date(a.created_at).toLocaleString(),
-				utime: new Date(a.updated_at).toLocaleString(),
-				url : a.Attachment.length > 0 ? a.Attachment[0].url : null
-			}
-		}catch( err ){
-			console.log(err);
+		var hname = "n/a";
+		if(a.fence_segment !== null){
+			this.state.hostdat.forEach( (h,i) => {
+				if(h.id == a.fence_segment.fence_host)
+					hname = h.HostName
+			});
+		}
+		const e = {
+			id: a.id,
+			rea: a.Reason,
+			ori: a.OriginBranch,
+			agp: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentInfo,
+			seg: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentName,
+			box: hname,
+			ctime: new Date(a.created_at).toLocaleString(),
+			utime: new Date(a.updated_at).toLocaleString(),
+			url : a.Attachment.length > 0 ? a.Attachment[0].url : null
 		}
 		console.log('b',e);
 		table.push(e);
@@ -321,20 +317,23 @@ onChange={this.changeEDate}/></div>
 			var tmp = []
 			console.log('recv',res.length);
 			if(this.state.fhostid.value > 0){
-			res.forEach( (e, i) => {
-				if(e.fence_segment.fence_host === this.state.fhostid.value)
-					this.buildTable(tmp,e);
-			});
+				res.forEach( (e, i) => {
+					if(e.fence_segment.fence_host === this.state.fhostid.value)
+						this.buildTable(tmp,e);
+				});
 			}else{
-			res.forEach( (e, i) => {
-				this.buildTable(tmp,e);
-			});
+				res.forEach( (e, i) => {
+					this.buildTable(tmp,e);
+				});
 			}
 			console.log('done',tmp.length);
 			this.setState({displayText: tmp.length < 1 ? 'no result': '',alist:tmp}, () =>{
+				if(this.state.alist.length < 1){
+					alert("no result");
+				}
 			});
 		}).catch( err => {
-			this.setState({displayText: err.message});
+			console.log(err);
 		});
 	}
 

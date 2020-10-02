@@ -76,22 +76,26 @@ class AlertView extends Component {
 	}
 
 	buildTable = (table, a) => {
-		var hname = "n/a";
 		console.log('a',a);
-		this.state.hostdat.forEach( (h,i) => {
-			if(h.id == a.fence_segment.fence_host)
-				hname = h.HostName
-		});
-		const e = {
-			id: a.id,
-			rea: a.Reason,
-			ori: a.OriginBranch,
-			agp: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentInfo,
-			seg: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentName,
-			box: hname,
-			ctime: new Date(a.created_at).toLocaleString(),
-			utime: new Date(a.updated_at).toLocaleString(),
-			url : a.Attachment.length > 0 ? a.Attachment[0].url : null
+		try{
+			var hname = "n/a";
+			this.state.hostdat.forEach( (h,i) => {
+				if(h.id == a.fence_segment.fence_host)
+					hname = h.HostName
+			});
+			const e = {
+				id: a.id,
+				rea: a.Reason,
+				ori: a.OriginBranch,
+				agp: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentInfo,
+				seg: a.fence_segment === null ? 'n/a':a.fence_segment.SegmentName,
+				box: hname,
+				ctime: new Date(a.created_at).toLocaleString(),
+				utime: new Date(a.updated_at).toLocaleString(),
+				url : a.Attachment.length > 0 ? a.Attachment[0].url : null
+			}
+		}catch( err ){
+			console.log(err);
 		}
 		console.log('b',e);
 		table.push(e);
@@ -325,10 +329,7 @@ onChange={this.changeEDate}/></div>
 			});
 			}
 			console.log('done',tmp.length);
-			this.setState({displayText:'',alist:tmp}, () =>{
-				if(this.state.alist.length === 0){
-					this.setState({displayText: "no result"});
-				}
+			this.setState({displayText: tmp.length < 1 ? 'no result': '',alist:tmp}, () =>{
 			});
 		}).catch( err => {
 			this.setState({displayText: err.message});

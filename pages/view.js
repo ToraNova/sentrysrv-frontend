@@ -179,7 +179,7 @@ onChange={this.changeEDate}/></div>
 	options={reasonopt}/>
 </Col>
 <Col md={3}>
-<div><label>Search Limit (0 for no limit)</label></div>
+<div><label>Search Limit (default 100)</label></div>
 <InputNumber style={{height: 40, fontSize: 'large'}} defaultValue={this.state.flimit} onChange={this.changeLimit}/>
 </Col>
 </Row>

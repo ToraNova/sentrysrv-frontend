@@ -79,10 +79,12 @@ class AlertView extends Component {
 		console.log('a',a);
 		try{
 			var hname = "n/a";
-			this.state.hostdat.forEach( (h,i) => {
-				if(h.id == a.fence_segment.fence_host)
-					hname = h.HostName
-			});
+			if(a.fence_segment !== null){
+				this.state.hostdat.forEach( (h,i) => {
+					if(h.id == a.fence_segment.fence_host)
+						hname = h.HostName
+				});
+			}
 			const e = {
 				id: a.id,
 				rea: a.Reason,

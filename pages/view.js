@@ -76,7 +76,6 @@ class AlertView extends Component {
 	}
 
 	buildTable = (table, a) => {
-		console.log('a',a);
 		var hname = "n/a";
 		if(a.fence_segment !== null){
 			this.state.hostdat.forEach( (h,i) => {
@@ -95,7 +94,6 @@ class AlertView extends Component {
 			utime: new Date(a.updated_at).toLocaleString(),
 			url : a.Attachment.length > 0 ? a.Attachment[0].url : null
 		}
-		console.log('b',e);
 		table.push(e);
 	};
 
@@ -163,7 +161,7 @@ class AlertView extends Component {
 	title="Triggered Alerts"
 	data={this.state.alist}
 	columns={tableHeader}
-	options={{ search: true, paging: true, exportButton: true }}
+	options={{ search: true, paging: true, exportButton: true, exportCsv: this.csvOut }}
 	icons={{
 		SortArrow: () => <ArrowDropDown />,
 		ResetSearch: () => <Clear />,
@@ -271,12 +269,45 @@ onChange={this.changeEDate}/></div>
 	}
 
 	handleTableClick = (evnt, row) => {
-		//console.log(row);
 		if(row.url !== null){
 			this.setState({imurl:process.env.backend_urlp+row.url, imview: true });
 		}else{
 			alert('no image captured for this alert.');
 		}
+	}
+
+	csvOut = (cols, dat) =>{
+		let csvContent = "data:text/csv;charset=utf-8,";
+
+		let sdate = this.state.fsdate.toLocaleDateString();
+		let edate = this.state.fedate.toLocaleDateString();
+
+		let rarr = []
+		for(var field of cols){
+			rarr.push(field.title);
+		}
+		let rowstr = rarr.join(',');
+		csvContent += rowstr + "\r\n";
+		dat.forEach( (e, i) => {
+			rarr = []
+			for (var key of Object.keys(e)) {
+				if(e[key] == undefined || e[key] == null)
+					rarr.push("n/a");
+				else
+					rarr.push(e[key]);
+			}
+			rowstr = rarr.join(',');
+			csvContent += rowstr + "\r\n";
+		});
+
+		var encodedUri = encodeURI(csvContent);
+		var link = document.createElement("a");
+		link.setAttribute("href", encodedUri);
+		link.setAttribute("href", encodedUri);
+		link.setAttribute("download", `${sdate}-${edate}-alerts.csv`);
+		document.body.appendChild(link); // firefox
+		link.click();
+		document.body.removeChild(link); // cleanup
 	}
 
 	submitQ = (val) => {

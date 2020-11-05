@@ -283,18 +283,20 @@ onChange={this.changeEDate}/></div>
 		let edate = this.state.fedate.toLocaleDateString();
 
 		let rarr = []
-		for(var field of cols){
-			rarr.push(field.title);
+		let karr = []
+		for(var col of cols){
+			rarr.push(col.title);
+			karr.push(col.field);
 		}
 		let rowstr = rarr.join(',');
 		csvContent += rowstr + "\r\n";
 		dat.forEach( (e, i) => {
 			rarr = []
-			for (var key of Object.keys(e)) {
-				if(e[key] == undefined || e[key] == null)
-					rarr.push("n/a");
+			for(var field of karr){
+				if(e[field] == undefined || e[field] == null)
+					rarr.push("N/A");
 				else
-					rarr.push(e[key]);
+					rarr.push(e[field]);
 			}
 			rowstr = rarr.join(',');
 			csvContent += rowstr + "\r\n";

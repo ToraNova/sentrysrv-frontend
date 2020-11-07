@@ -69,7 +69,7 @@ class AlertView extends Component {
 			ftypeid: defo,
 			fsdate: ytd,
 			fedate: now,
-			flimit: 0,
+			flimit: 1000,
 			freason: {value:"Any", label:"Any Reason"},
 			displayText: '',
 		}
@@ -199,7 +199,7 @@ onChange={this.changeEDate}/></div>
 	options={reasonopt}/>
 </Col>
 <Col md={3}>
-<div><label>Search Limit (default 100)</label></div>
+<div><label>Search Limit (default 1000)</label></div>
 <InputNumber style={{height: 40, fontSize: 'large'}} defaultValue={this.state.flimit} onChange={this.changeLimit}/>
 </Col>
 </Row>
@@ -312,15 +312,9 @@ onChange={this.changeEDate}/></div>
 		document.body.removeChild(link); // cleanup
 	}
 
-	submitQ = (val) => {
-
+	submitQ = async () => {
 		//var qurl = `/alerts?_start=0`
 		var qurl = `/alerts?created_at_gt=${this.state.fsdate.toISOString()}&created_at_lt=${this.state.fedate.toISOString()}`
-
-		if(this.state.flimit > 0){
-			//works
-			qurl += `&_limit=${this.state.flimit > 997 ? this.state.flimit : 997 }`;
-		}
 
 		if(this.state.freason.value !== 'Any'){
 			//works
@@ -342,12 +336,28 @@ onChange={this.changeEDate}/></div>
 			qurl += `&OriginBranch=${this.state.fbranch.value}`;
 		}
 
-		//console.log(qurl)
+		const blurl = qurl;
+		const maxqlim = 997;
+		var fl = this.state.flimit; //left
+		var sk = 0; //skip
+		var qlist = [];
 
-		this.props.auth.dfetch(
-		qurl,
-		{method:'GET'}).then( res => {
-			var tmp = []
+		if(fl <= 0)
+			fl = maxlim;
+
+		while(fl > 0){
+			//works
+			qlist.push(blurl + `&_limit=${fl > maxqlim ? maxqlim : fl }&_start=${sk}`) //997
+			if(fl <= maxqlim){
+				break;
+			}
+			fl -= maxqlim; //998-997 = 1
+			sk = maxqlim; //sk 997
+		}
+
+		var tmp = [];
+		for( var q of qlist){
+			const res = await this.props.auth.dfetch(q, {method:'GET'});
 			console.log('recv',res.length);
 			if(this.state.fhostid.value > 0){
 				res.forEach( (e, i) => {
@@ -359,14 +369,12 @@ onChange={this.changeEDate}/></div>
 					this.buildTable(tmp,e);
 				});
 			}
-			console.log('done',tmp.length);
-			this.setState({displayText: tmp.length < 1 ? 'no result': '',alist:tmp}, () =>{
-				if(this.state.alist.length < 1){
-					alert("no result");
-				}
-			});
-		}).catch( err => {
-			console.log(err);
+		}
+		console.log('done',tmp.length);
+		this.setState({displayText: tmp.length < 1 ? 'no result': '',alist:tmp}, () =>{
+			if(this.state.alist.length < 1){
+				alert("no result");
+			}
 		});
 	}
 

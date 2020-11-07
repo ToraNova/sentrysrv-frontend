@@ -97,6 +97,28 @@ class AlertView extends Component {
 		table.push(e);
 	};
 
+	uniqueid = (arr) => {
+		var u = {}, a = [];
+		for(var i = 0, l = arr.length; i < arr.length; ++i){
+			if(!u.hasOwnProperty(arr[i].id)) {
+				a.push(arr[i]);
+				u[arr[i].id] = 1;
+			}
+		}
+		return a;
+	}
+
+	unique = (arr) => {
+		var u = {}, a = [];
+		for(var i = 0, l = arr.length; i < arr.length; ++i){
+			if(!u.hasOwnProperty(arr[i])) {
+				a.push(arr[i]);
+				u[arr[i]] = 1;
+			}
+		}
+		return a;
+	}
+
 	//Main render function
 	render(){
 
@@ -371,6 +393,8 @@ onChange={this.changeEDate}/></div>
 			}
 		}
 		console.log('done',tmp.length);
+		tmp = this.uniqueid(tmp);
+		console.log('unique',tmp.length);
 		this.setState({displayText: tmp.length < 1 ? 'no result': '',alist:tmp}, () =>{
 			if(this.state.alist.length < 1){
 				alert("no result");

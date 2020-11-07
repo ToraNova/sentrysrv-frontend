@@ -319,7 +319,7 @@ onChange={this.changeEDate}/></div>
 
 		if(this.state.flimit > 0){
 			//works
-			qurl += `&_limit=${this.state.flimit}`;
+			qurl += `&_limit=${this.state.flimit > 997 ? this.state.flimit : 997 }`;
 		}
 
 		if(this.state.freason.value !== 'Any'){

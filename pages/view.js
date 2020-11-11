@@ -382,28 +382,45 @@ onChange={this.changeEDate}/></div>
 		var res;
 		var q;
 		var tmp;
-
+		var pat;
+		var stop;
 		for(var index=0;index<qlist.length;index++){
 			q = qlist[index];
-			try{
-				res = await this.props.auth.dfetch(q, {method:'GET'});
-				tmp = [];
-				if(this.state.fhostid.value > 0){
-					res.forEach( (e, i) => {
-						if(e.fence_segment.fence_host === this.state.fhostid.value)
+			tmp = [];
+			pat = 3;
+			stop = false;
+			while(pat>0){
+				try{
+					res = await this.props.auth.dfetch(q, {method:'GET'});
+					if(this.state.fhostid.value > 0){
+						res.forEach( (e, i) => {
+							if(e.fence_segment.fence_host === this.state.fhostid.value)
+								this.buildTable(tmp,e);
+						});
+					}else{
+						res.forEach( (e, i) => {
 							this.buildTable(tmp,e);
-					});
-				}else{
-					res.forEach( (e, i) => {
-						this.buildTable(tmp,e);
-					});
+						});
+					}
+					if(tmp.length == 0){
+						stop = true;
+						break;
+					}
+					console.log(`query #${index} recv`,res.length);
+					tmp = this.state.alist.concat(tmp);
+					this.setState({displayText: tmp < 1 ? 'no result': '',alist: tmp}); //update state
+					break;
+				}catch(err){
+					console.log(index,err);
+					pat--;
 				}
-				if(tmp.length == 0)break;
-				console.log(`query #${index} recv`,res.length);
-				tmp = this.state.alist.concat(tmp);
-				this.setState({displayText: tmp < 1 ? 'no result': '',alist: tmp}); //update state
-			}catch(err){
-				console.log(`error fetching request #${index}: ${err}`);
+			}
+
+			if(pat===0){
+				alert(`network error fetching request #${index}. please try again`);
+				break;
+			}else if(stop){
+				break;
 			}
 		}
 		alert(`total results: ${this.state.alist.length}`);

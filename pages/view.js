@@ -335,6 +335,7 @@ onChange={this.changeEDate}/></div>
 	}
 
 	submitQ = async () => {
+		await this.setState({enableq:false});
 		//var qurl = `/alerts?_start=0`
 		var qurl = `/alerts?created_at_gt=${this.state.fsdate.toISOString()}&created_at_lt=${this.state.fedate.toISOString()}`
 
@@ -406,6 +407,7 @@ onChange={this.changeEDate}/></div>
 			}
 		}
 		alert(`total results: ${this.state.alist.length}`);
+		this.setState({enableq:true});
 	}
 
 	componentDidMount(){

@@ -69,7 +69,7 @@ class AlertView extends Component {
 			ftypeid: defo,
 			fsdate: ytd,
 			fedate: now,
-			flimit: 1000,
+			flimit: 50000,
 			freason: {value:"Any", label:"Any Reason"},
 			displayText: '',
 		}
@@ -99,7 +99,7 @@ class AlertView extends Component {
 
 	uniqueid = (arr) => {
 		var u = {}, a = [];
-		for(var i = 0, l = arr.length; i < arr.length; ++i){
+		for(var i = 0; i < arr.length; i++){
 			if(!u.hasOwnProperty(arr[i].id)) {
 				a.push(arr[i]);
 				u[arr[i].id] = 1;
@@ -374,32 +374,38 @@ onChange={this.changeEDate}/></div>
 				break;
 			}
 			fl -= maxqlim; //998-997 = 1
-			sk = maxqlim; //sk 997
+			sk += maxqlim; //sk 997
 		}
 
-		var tmp = [];
-		for( var q of qlist){
-			const res = await this.props.auth.dfetch(q, {method:'GET'});
-			console.log('recv',res.length);
-			if(this.state.fhostid.value > 0){
-				res.forEach( (e, i) => {
-					if(e.fence_segment.fence_host === this.state.fhostid.value)
+		await this.setState({alist:[]}); //clear current table
+		var res;
+		var q;
+		var tmp;
+
+		for(var index=0;index<qlist.length;index++){
+			q = qlist[index];
+			try{
+				res = await this.props.auth.dfetch(q, {method:'GET'});
+				tmp = [];
+				if(this.state.fhostid.value > 0){
+					res.forEach( (e, i) => {
+						if(e.fence_segment.fence_host === this.state.fhostid.value)
+							this.buildTable(tmp,e);
+					});
+				}else{
+					res.forEach( (e, i) => {
 						this.buildTable(tmp,e);
-				});
-			}else{
-				res.forEach( (e, i) => {
-					this.buildTable(tmp,e);
-				});
+					});
+				}
+				if(tmp.length == 0)break;
+				console.log(`query #${index} recv`,res.length);
+				tmp = this.state.alist.concat(tmp);
+				this.setState({displayText: tmp < 1 ? 'no result': '',alist: tmp}); //update state
+			}catch(err){
+				console.log(`error fetching request #${index}: ${err}`);
 			}
 		}
-		console.log('done',tmp.length);
-		tmp = this.uniqueid(tmp);
-		console.log('unique',tmp.length);
-		this.setState({displayText: tmp.length < 1 ? 'no result': '',alist:tmp}, () =>{
-			if(this.state.alist.length < 1){
-				alert("no result");
-			}
-		});
+		alert(`total results: ${this.state.alist.length}`);
 	}
 
 	componentDidMount(){

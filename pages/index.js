@@ -19,7 +19,8 @@ const Index = () => (
 <Nav />
 </Border>
 	<div id="main">
-	<h1>Advance Computing Fencing Dashboard System v2</h1>
+	<h1>Fencing Alarms Dashboard System v2.</h1>
+	<p>by Advance Communication Sdn Bhd.<p>
 	</div>
 <style jsx>{`
 #main {

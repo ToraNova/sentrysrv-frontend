@@ -23,10 +23,9 @@ import FocusPane from '../components/focuspane.js'
 
 //requires authentication
 import AuthRequired from  '../utils/authreq.js'
+var delayFire = 7
 
 class Focus extends Component {
-
-	var delayFire = 7
 
 	handleError = (e) => {
 		console.log(e);

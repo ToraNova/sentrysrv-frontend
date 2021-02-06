@@ -23,7 +23,6 @@ import FocusPane from '../components/focuspane.js'
 
 //requires authentication
 import AuthRequired from  '../utils/authreq.js'
-var delayFire = 2000
 
 class Focus extends Component {
 
@@ -152,10 +151,21 @@ class Focus extends Component {
 
 		this.socket.on('focus/alert/new', (res) => {
 			//start a timer, then emit an init later
-			setTimeout( function(socket){
-				//console.log('delayed request fire')
-				socket.emit('focus/init',`{"count":"4"}`)
-			}, delayFire, this.socket);
+			console.log(res);
+			if(res.alert_model == 3){
+				// nvai
+				setTimeout( function(socket){
+					//console.log('delayed request fire')
+					socket.emit('focus/init',`{"count":"4"}`)
+				}, 300, this.socket);
+			}else{
+				// g-sensor or p-radar
+				setTimeout( function(socket){
+					//console.log('delayed request fire')
+					socket.emit('focus/init',`{"count":"4"}`)
+				}, 2000, this.socket);
+
+			}
 		})
 	}
 

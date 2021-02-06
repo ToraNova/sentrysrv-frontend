@@ -26,6 +26,8 @@ import AuthRequired from  '../utils/authreq.js'
 
 class Focus extends Component {
 
+	var delayFire = 7
+
 	handleError = (e) => {
 		console.log(e);
 		console.log(e.stack);
@@ -128,7 +130,7 @@ class Focus extends Component {
 			this.socket.emit('focus/alert/highlight', '0')
 			setTimeout( function(socket){
 				//console.log('delayed request fire')
-				socket.emit('focus/init','{"count":"4"}')
+				socket.emit('focus/init',`{"count":"${delayFire}"}`)
 			}, 500, this.socket);
 		}).catch( (e) => this.handleError(e));
 	}
@@ -143,7 +145,7 @@ class Focus extends Component {
 
 	componentDidMount(){
 		this.socket = io.connect(process.env.backend_urlp)
-		this.socket.emit('focus/init','{"count":"4"}')
+		this.socket.emit('focus/init',`{"count":"${delayFire}"}`)
 
 		this.socket.on('focus/alert/data', (res) => {
 			const tmp = JSON.parse(res)
@@ -154,7 +156,7 @@ class Focus extends Component {
 			//start a timer, then emit an init later
 			setTimeout( function(socket){
 				//console.log('delayed request fire')
-				socket.emit('focus/init','{"count":"4"}')
+				socket.emit('focus/init',`{"count":"${delayFire}"}`)
 			}, 2000, this.socket);
 		})
 	}

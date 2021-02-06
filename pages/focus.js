@@ -23,7 +23,7 @@ import FocusPane from '../components/focuspane.js'
 
 //requires authentication
 import AuthRequired from  '../utils/authreq.js'
-var delayFire = 7
+var delayFire = 2000
 
 class Focus extends Component {
 
@@ -128,9 +128,8 @@ class Focus extends Component {
 			*/
 			this.socket.emit('focus/alert/highlight', '0')
 			setTimeout( function(socket){
-				//console.log('delayed request fire')
-				socket.emit('focus/init',`{"count":"${delayFire}"}`)
-			}, 500, this.socket);
+				socket.emit('focus/init',`{"count":"4"}`)
+			}, 500, this.socket); //short delay fire
 		}).catch( (e) => this.handleError(e));
 	}
 
@@ -144,7 +143,7 @@ class Focus extends Component {
 
 	componentDidMount(){
 		this.socket = io.connect(process.env.backend_urlp)
-		this.socket.emit('focus/init',`{"count":"${delayFire}"}`)
+		this.socket.emit('focus/init',`{"count":"4"}`)
 
 		this.socket.on('focus/alert/data', (res) => {
 			const tmp = JSON.parse(res)
@@ -155,8 +154,8 @@ class Focus extends Component {
 			//start a timer, then emit an init later
 			setTimeout( function(socket){
 				//console.log('delayed request fire')
-				socket.emit('focus/init',`{"count":"${delayFire}"}`)
-			}, 2000, this.socket);
+				socket.emit('focus/init',`{"count":"4"}`)
+			}, delayFire, this.socket);
 		})
 	}
 

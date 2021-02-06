@@ -151,13 +151,13 @@ class Focus extends Component {
 
 		this.socket.on('focus/alert/new', (res) => {
 			//start a timer, then emit an init later
-			console.log(res);
-			if(res.alert_model.id === 3){
+			const tmp = JSON.parse(res)
+			if(tmp.alert_model.id === 3){
 				// nvai
 				setTimeout( function(socket){
 					//console.log('delayed request fire')
 					socket.emit('focus/init',`{"count":"4"}`)
-				}, 1000, this.socket);
+				}, 500, this.socket);
 			}else{
 				setTimeout( function(socket){
 					//console.log('delayed request fire')

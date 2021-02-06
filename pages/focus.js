@@ -157,7 +157,7 @@ class Focus extends Component {
 				setTimeout( function(socket){
 					//console.log('delayed request fire')
 					socket.emit('focus/init',`{"count":"4"}`)
-				}, 500, this.socket);
+				}, 800, this.socket);
 			}else{
 				// g-sensor or p-radar
 				setTimeout( function(socket){

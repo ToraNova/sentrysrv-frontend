@@ -6,7 +6,7 @@ module.exports = (phase, { defaultConfig }) => {
 	if (phase === PHASE_DEVELOPMENT_SERVER) {
 		return {
 			env: {
-				backend_urlp: 'http://localhost:1337',
+				backend_urlp: 'http://192.168.40.110:1337',
 				mapfile: '/map.png',
 				soundfile: '/sounds/short02.mp3'
 			},
@@ -17,7 +17,7 @@ module.exports = (phase, { defaultConfig }) => {
 
 	return {
 		env: {
-			backend_urlp: 'http://localhost:1337',
+			backend_urlp: 'http://192.168.40.110:1337',
 			mapfile: '/map_new.png',
 			soundfile: '/sounds/short02.mp3'
 		},

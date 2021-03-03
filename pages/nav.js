@@ -32,7 +32,7 @@ class Nav extends Component{
 			:
 			<>
 			<Link href="/map"><a style={linkStyle}>Map</a></Link>
-			<Link href="/focus"><a style={linkStyle}>Focus</a></Link>
+			<Link href="/focus2"><a style={linkStyle}>Focus</a></Link>
 			<Link href="/down"><a style={linkStyle}>Host Status Map</a></Link>
 			<Link href="/editor"><a style={linkStyle}>Editor</a></Link>
 			</>

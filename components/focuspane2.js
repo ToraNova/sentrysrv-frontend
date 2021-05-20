@@ -95,7 +95,7 @@ class FocusPane extends Component {
 
 	datedisp(isostr) {
 		const d = new Date(isostr)
-		return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`
+		return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
 	}
 
 	timedisp(isostr) {
